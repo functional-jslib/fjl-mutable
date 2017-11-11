@@ -1,6 +1,6 @@
 {
   "name": "fjl-mutable",
-  "version": "1.0.0",
+  "version": "0.10.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -12,5 +12,8 @@
   "dependencies": {
     "fjl": "^0.17.7",
     "fjl-error-throwing": "^0.5.1"
+  },
+  "devDependencies": {
+    "fjl-chai-helpers": "^0.10.0"
   }
 }
