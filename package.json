@@ -1,12 +1,22 @@
 {
   "name": "fjl-mutable",
-  "version": "0.10.0",
+  "version": "0.10.5",
   "description": "",
-  "main": "index.js",
+  "main": "src/fjlMutable.js",
+  "module": "src/fjlMutable.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "fjl",
+    "functional-jslib",
+    "functional",
+    "mutable",
+    "typed",
+    "strict",
+    "properties",
+    "property"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
