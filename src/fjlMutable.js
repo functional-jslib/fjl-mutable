@@ -11,7 +11,7 @@ export const
                 return _value;
             },
             set: function (value) {
-                _value = errorIfNotTypeOnTarget(Type, target, propName, value);
+                _value = errorIfNotTypeOnTarget(Type, propName, target, value);
             }
         };
     },
@@ -21,8 +21,8 @@ export const
         return descriptor;
     },
 
-    errorIfNotTypeOnTarget$ = (Type, target, propName, propValue) => {
-        errorIfNotType((target).constructor.name, propName, propValue, Type);
+    errorIfNotTypeOnTarget$ = (Type, propName, target, propValue) => {
+        errorIfNotType(Type, (target).constructor.name, propName, propValue);
         return propValue;
     },
 

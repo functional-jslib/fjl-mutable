@@ -20,7 +20,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fjl": "^0.17.7",
+    "fjl": "^0.17.10",
     "fjl-error-throwing": "^0.5.1"
   },
   "devDependencies": {
