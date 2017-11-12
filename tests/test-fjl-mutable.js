@@ -1,18 +1,19 @@
 import {assert, expect} from 'chai';
 import {
     _descriptorForSettable,
-    _makeDescriptorEnumerable,
+    _makeDescriptorEnumerable, defineProp$,
+    errorIfNotTypeOnTarget$,
 }
     from "../src/fjlMutable";
 
 const log = console.log.bind(console);
 
 describe ('#fjlMutable', function () {
-    const someTarget = {},
-        exampleNumberDescriptor = _descriptorForSettable(Number, 'someNum', someTarget);
 
     describe ('#_descriptorForSettable', function () {
-        const result = exampleNumberDescriptor;
+        const someTarget = {},
+            exampleNumberDescriptor = _descriptorForSettable(Number, 'someNum', someTarget),
+            result = exampleNumberDescriptor;
         it ('should return a descriptor with a setter and a getter', function () {
             const keys = Object.keys(result);
             expect(keys.length).to.equal(2);
@@ -60,6 +61,48 @@ describe ('#fjlMutable', function () {
         });
     });
 
+    describe ('#errorIfNotTypeOnTarget$', function () {
+        it ('should throw an error when `value` passed in doesn\'t match given type', function () {
+            assert.throw(() => errorIfNotTypeOnTarget$(Number, {}, 'somePropName', 'some value'));
+        });
+        it ('should return given `value` and not throw an error when passed in `value` matches given `type`', function () {
+            expect(errorIfNotTypeOnTarget$(Number, {}, 'somePropName', 99)).to.equal(99);
+        });
+    });
 
+    describe ('defineProp$', function () {
+        const someTarget = {},
+            propName = 'someNum',
+            [target, descriptor] = defineProp$(Number, propName, [someTarget]);
+        it ('should return a `target` and `descriptor` pair (tuple)', function () {
+            expect(target).to.equal(someTarget);
+            expect(!!descriptor).to.equal(true);
+        });
+        it ('should define property `propName` on `target`', function () {
+            expect(target.hasOwnProperty(propName)).to.equal(true);
+        });
+        it ('should return a target whose defined `propName` throws an error when ' +
+            'the wrong type is passed in', function () {
+            assert.throws(() => target[propName] = 'some value', Error);
+        });
+        it ('should return a target whose defined `propName` doesn\'t throw' +
+            'an error when the correct type of value is passed in', function () {
+            target[propName] = 99;
+            expect(target[propName]).to.equal(99);
+        });
+        it ('should allow the user to pass in his/her own `descriptor`', function () {
+            const somePropName = 'somePropName',
+                someValue = (new Date()).getTime(),
+                customDescriptor = {
+                    value: someValue,
+                    enumerable: true
+                },
+                [target2, descriptor2] = defineProp$(Number, somePropName, [someTarget, customDescriptor]);
+            assert.throws(() => target2[somePropName] = 99, Error);
+            expect(target2[somePropName]).to.equal(someValue);
+            expect(descriptor2).to.equal(customDescriptor);
+            expect(descriptor2.enumerable).to.equal(true);
+        });
+    });
 
 });
