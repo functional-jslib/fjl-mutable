@@ -186,6 +186,29 @@ var slicedToArray = function () {
   };
 }();
 
+/**
+ * @module fjlMutable
+ */
+/** ============================================================= */
+/** Type definitions:                                             */
+/** ============================================================= */
+/**
+ * @typedef {String|Function} TypeRef
+ * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+ */
+
+/**
+ * @typedef {*} Target
+ */
+
+/**
+ * @typedef {Object} Descriptor
+ */
+
+/**
+ * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
+ */
+
 var _descriptorForSettable = function _descriptorForSettable(Type, propName, target) {
     var _value = void 0;
     return {
@@ -206,7 +229,7 @@ var _makeEnumerableDescriptor = function _makeEnumerableDescriptor(_ref) {
     return [target, descriptor];
 };
 var errorIfNotTypeOnTarget$ = function errorIfNotTypeOnTarget$(Type, propName, target, propValue) {
-    fjlErrorThrowing.errorIfNotType(Type, fjlErrorThrowing.getTypeName(target), propName, propValue);
+    fjlErrorThrowing.errorIfNotType(fjlErrorThrowing.getTypeName(Type), target, propName, propValue);
     return propValue;
 };
 var defineProp$ = function defineProp$(Type, propName, _ref3) {

@@ -1,13 +1,14 @@
 {
   "name": "fjl-mutable",
-  "version": "0.10.5",
+  "version": "0.11.0",
   "description": "",
   "main": "src/fjlMutable.js",
   "module": "src/fjlMutable.js",
   "scripts": {
     "build": "gulp clean && gulp build",
     "build-docs": "gulp jsdoc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-cjs": "mocha tests/**/cjs-test-*.js",
+    "test": "npm run test-cjs && mocha tests/**/test-*.js --plugins babel-plugin-add-module-exports --require babel-register"
   },
   "keywords": [
     "fjl",
@@ -23,10 +24,9 @@
   "license": "ISC",
   "dependencies": {
     "fjl": "^0.17.10",
-    "fjl-error-throwing": "^0.5.1"
+    "fjl-error-throwing": "^0.7.4"
   },
   "devDependencies": {
-    "fjl-chai-helpers": "^0.10.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-env": "^1.6.0",
@@ -35,6 +35,7 @@
     "chai": "^4.1.2",
     "chalk": "^2.1.0",
     "del": "^3.0.0",
+    "fjl-chai-helpers": "^0.10.0",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-better-rollup": "^1.1.1",
