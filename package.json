@@ -5,10 +5,10 @@
   "main": "src/fjlMutable.js",
   "module": "src/fjlMutable.js",
   "scripts": {
-    "build": "gulp clean && gulp build",
+    "build": "gulp clean && gulp build && npm test-cjs",
     "build-docs": "gulp jsdoc",
     "test-cjs": "mocha tests/**/cjs-test-*.js",
-    "test": "npm run test-cjs && mocha tests/**/test-*.js --plugins babel-plugin-add-module-exports --require babel-register"
+    "test": "mocha tests/**/test-*.js --plugins babel-plugin-add-module-exports --require babel-register"
   },
   "keywords": [
     "fjl",

@@ -48,12 +48,12 @@ export const
     },
 
     /**
-     * @function module:fjlMutable._makeEnumerableDescriptor
+     * @function module:fjlMutable._makeDescriptorEnumerable
      * @param {TargetDescriptorTuple} - [target, descriptor] tuple.
      * @returns {TargetDescriptorTuple} - Array of target and descriptor.
      * @private
      */
-    _makeEnumerableDescriptor = ([target, descriptor]) => {
+    _makeDescriptorEnumerable = ([target, descriptor]) => {
         descriptor.enumerable = true;
         return [target, descriptor];
     },
@@ -97,7 +97,7 @@ export const
      * @returns {TargetDescriptorTuple}
      */
     defineEnumProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) =>
-        _makeEnumerableDescriptor (
+        _makeDescriptorEnumerable (
             defineProp$(Type, propName, [target, descriptor], defaultValue)
         ),
 

@@ -1,13 +1,18 @@
 import {assert, expect} from 'chai';
-import {_descriptorForSettable} from "../src/fjlMutable";
+import {
+    _descriptorForSettable,
+    _makeDescriptorEnumerable,
+}
+    from "../src/fjlMutable";
 
 const log = console.log.bind(console);
 
 describe ('#fjlMutable', function () {
-    describe ('#_descriptorForSettable', function () {
-        const someTarget = {},
-            result = _descriptorForSettable(Number, 'someNum', someTarget);
+    const someTarget = {},
+        exampleNumberDescriptor = _descriptorForSettable(Number, 'someNum', someTarget);
 
+    describe ('#_descriptorForSettable', function () {
+        const result = exampleNumberDescriptor;
         it ('should return a descriptor with a setter and a getter', function () {
             const keys = Object.keys(result);
             expect(keys.length).to.equal(2);
@@ -40,4 +45,21 @@ describe ('#fjlMutable', function () {
             expect(result.hasOwnProperty('set')).to.equal(true);
         });
     });
+
+    describe ('#_makeDescriptorEnumerable', function () {
+        const [_, descriptor] = _makeDescriptorEnumerable([{}, {}]);
+
+        it ('should return an object with an `enumerable` property set to `true`', function () {
+            expect(descriptor.hasOwnProperty('enumerable')).to.equal(true);
+            expect(descriptor.enumerable).to.equal(true);
+        });
+
+        it ('should throw an error when no descriptor is passed in `TargetDescriptorPair`', function () {
+            assert.throws(() => _makeDescriptorEnumerable([]), Error);
+            assert.throws(() => _makeDescriptorEnumerable([1]), Error);
+        });
+    });
+
+
+
 });
