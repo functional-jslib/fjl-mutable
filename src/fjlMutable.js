@@ -1,10 +1,10 @@
-import {curry, flip, flip3} from 'fjl';
+import {isUndefined, curry} from 'fjl';
 
-import {errorIfNotType} from 'fjl-error-throwing';
+import {errorIfNotType, getTypeName} from 'fjl-error-throwing';
 
 export const
 
-    _descriptorForSettable = Type => {
+    _descriptorForSettable = (Type, propName, target) => {
         let _value;
         return {
             get: function () {
@@ -16,26 +16,28 @@ export const
         };
     },
 
-    _makeEnumerableDescriptor = definePropResult => {
-        [target, descriptor] = definePropResult;
+    _makeEnumerableDescriptor = ([target, descriptor]) => {
         descriptor.enumerable = true;
         return [target, descriptor];
     },
 
     errorIfNotTypeOnTarget$ = (Type, propName, target, propValue) => {
-        errorIfNotType(Type, (target).constructor.name, propName, propValue);
+        errorIfNotType(Type, getTypeName(target), propName, propValue);
         return propValue;
     },
 
-    defineProp$ = (Type, propName, target) => {
-        const descriptor = _descriptorForSettable(Type);
+    defineProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) => {
+        descriptor = descriptor || _descriptorForSettable(Type, propName, target);
         Object.defineProperty(target, propName, descriptor);
+        if (!isUndefined(defaultValue)) {
+            target[propName] = defaultValue;
+        }
         return [target, descriptor];
     },
 
-    defineEnumProp$ = (Type, propName, target) =>
+    defineEnumProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) =>
         _makeEnumerableDescriptor (
-            defineProp$(Type, propName, target)
+            defineProp$(Type, propName, [target, descriptor], defaultValue)
         ),
 
     errorIfNotTypeOnTarget = curry(errorIfNotTypeOnTarget$),
@@ -65,24 +67,3 @@ export const
     defineEnumPropString = defineEnumProp(String)
 
 ;
-
-export default {
-    defineProp,
-    defineProp$,
-    definePropArray,
-    definePropBoolean,
-    definePropFunction,
-    definePropNumber,
-    definePropString,
-    defineEnumProp,
-    defineEnumProp$,
-    defineEnumPropArray,
-    defineEnumPropBoolean,
-    defineEnumPropFunction,
-    defineEnumPropNumber,
-    defineEnumPropString,
-    errorIfNotTypeOnTarget,
-    errorIfNotTypeOnTarget$,
-    _descriptorForSettable,
-    _makeEnumerableDescriptor
-}
