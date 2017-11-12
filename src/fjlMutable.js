@@ -16,9 +16,10 @@ export const
         };
     },
 
-    _makeEnumerableDescriptor = descriptor => {
+    _makeEnumerableDescriptor = definePropResult => {
+        [target, descriptor] = definePropResult;
         descriptor.enumerable = true;
-        return descriptor;
+        return [target, descriptor];
     },
 
     errorIfNotTypeOnTarget$ = (Type, propName, target, propValue) => {
