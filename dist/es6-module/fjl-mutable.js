@@ -4,26 +4,9 @@ import { errorIfNotType, getTypeName } from 'fjl-error-throwing';
 /**
  * @module fjlMutable
  */
-/** ============================================================= */
-/** Type definitions:                                             */
-/** ============================================================= */
 /**
- * @typedef {String|Function} TypeRef
- * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+ * @note Custom jsdoc type definitions defined toward end of file.
  */
-
-/**
- * @typedef {*} Target
- */
-
-/**
- * @typedef {Object} Descriptor
- */
-
-/**
- * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
- */
-
 const _descriptorForSettable = (Type, propName, target) => {
         let _value;
         return {
@@ -72,5 +55,25 @@ const defineEnumPropBoolean = defineEnumProp(Boolean);
 const defineEnumPropFunction = defineEnumProp(Function);
 const defineEnumPropNumber = defineEnumProp(Number);
 const defineEnumPropString = defineEnumProp(String);
+
+/** ============================================================= */
+/** Type definitions:                                             */
+/** ============================================================= */
+/**
+ * @typedef {String|Function} TypeRef
+ * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+ */
+
+/**
+ * @typedef {*} Target
+ */
+
+/**
+ * @typedef {Object} Descriptor
+ */
+
+/**
+ * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
+ */
 
 export { _descriptorForSettable, _makeDescriptorEnumerable, errorIfNotTypeOnTarget$, defineProp$, defineEnumProp$, errorIfNotTypeOnTarget, defineProp, defineEnumProp, definePropArray, definePropBoolean, definePropFunction, definePropNumber, definePropString, defineEnumPropArray, defineEnumPropBoolean, defineEnumPropFunction, defineEnumPropNumber, defineEnumPropString };

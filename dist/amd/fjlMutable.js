@@ -7,26 +7,9 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
     exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._makeDescriptorEnumerable = exports._descriptorForSettable = undefined;
 
 
-    /** ============================================================= */
-    /** Type definitions:                                             */
-    /** ============================================================= */
     /**
-     * @typedef {String|Function} TypeRef
-     * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+     * @note Custom jsdoc type definitions defined toward end of file.
      */
-
-    /**
-     * @typedef {*} Target
-     */
-
-    /**
-     * @typedef {Object} Descriptor
-     */
-
-    /**
-     * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
-     */
-
     /**
      * @module fjlMutable
      */
@@ -255,4 +238,24 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
      * @curried
      */
     defineEnumPropString = exports.defineEnumPropString = defineEnumProp(String);
+
+    /** ============================================================= */
+    /** Type definitions:                                             */
+    /** ============================================================= */
+    /**
+     * @typedef {String|Function} TypeRef
+     * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+     */
+
+    /**
+     * @typedef {*} Target
+     */
+
+    /**
+     * @typedef {Object} Descriptor
+     */
+
+    /**
+     * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
+     */
 });

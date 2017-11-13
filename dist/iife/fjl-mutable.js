@@ -189,26 +189,9 @@ var slicedToArray = function () {
 /**
  * @module fjlMutable
  */
-/** ============================================================= */
-/** Type definitions:                                             */
-/** ============================================================= */
 /**
- * @typedef {String|Function} TypeRef
- * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+ * @note Custom jsdoc type definitions defined toward end of file.
  */
-
-/**
- * @typedef {*} Target
- */
-
-/**
- * @typedef {Object} Descriptor
- */
-
-/**
- * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
- */
-
 var _descriptorForSettable = function _descriptorForSettable(Type, propName, target) {
     var _value = void 0;
     return {
@@ -269,6 +252,26 @@ var defineEnumPropBoolean = defineEnumProp(Boolean);
 var defineEnumPropFunction = defineEnumProp(Function);
 var defineEnumPropNumber = defineEnumProp(Number);
 var defineEnumPropString = defineEnumProp(String);
+
+/** ============================================================= */
+/** Type definitions:                                             */
+/** ============================================================= */
+/**
+ * @typedef {String|Function} TypeRef
+ * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+ */
+
+/**
+ * @typedef {*} Target
+ */
+
+/**
+ * @typedef {Object} Descriptor
+ */
+
+/**
+ * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
+ */
 
 exports._descriptorForSettable = _descriptorForSettable;
 exports._makeDescriptorEnumerable = _makeDescriptorEnumerable;

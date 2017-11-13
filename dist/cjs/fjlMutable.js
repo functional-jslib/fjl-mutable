@@ -14,26 +14,9 @@ var _fjl = require('fjl');
 
 var _fjlErrorThrowing = require('fjl-error-throwing');
 
-/** ============================================================= */
-/** Type definitions:                                             */
-/** ============================================================= */
 /**
- * @typedef {String|Function} TypeRef
- * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+ * @note Custom jsdoc type definitions defined toward end of file.
  */
-
-/**
- * @typedef {*} Target
- */
-
-/**
- * @typedef {Object} Descriptor
- */
-
-/**
- * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
- */
-
 var
 
 /**
@@ -275,3 +258,23 @@ defineEnumPropNumber = exports.defineEnumPropNumber = defineEnumProp(Number),
  * @curried
  */
 defineEnumPropString = exports.defineEnumPropString = defineEnumProp(String);
+
+/** ============================================================= */
+/** Type definitions:                                             */
+/** ============================================================= */
+/**
+ * @typedef {String|Function} TypeRef
+ * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+ */
+
+/**
+ * @typedef {*} Target
+ */
+
+/**
+ * @typedef {Object} Descriptor
+ */
+
+/**
+ * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
+ */
