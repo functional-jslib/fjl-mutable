@@ -1,11 +1,11 @@
 {
   "name": "fjl-mutable",
-  "version": "0.11.0",
+  "version": "0.11.2",
   "description": "",
   "main": "src/fjlMutable.js",
   "module": "src/fjlMutable.js",
   "scripts": {
-    "build": "gulp clean && gulp build && npm test-cjs",
+    "build": "gulp clean && gulp build && npm run test-cjs",
     "build-docs": "gulp jsdoc",
     "test-cjs": "mocha tests/**/cjs-test-*.js",
     "test": "mocha tests/**/test-*.js --plugins babel-plugin-add-module-exports --require babel-register"

@@ -220,7 +220,7 @@ var _descriptorForSettable = function _descriptorForSettable(Type, propName, tar
         }
     };
 };
-var _makeEnumerableDescriptor = function _makeEnumerableDescriptor(_ref) {
+var _makeDescriptorEnumerable = function _makeDescriptorEnumerable(_ref) {
     var _ref2 = slicedToArray(_ref, 2),
         target = _ref2[0],
         descriptor = _ref2[1];
@@ -252,7 +252,9 @@ var defineEnumProp$ = function defineEnumProp$(Type, propName, _ref5) {
         descriptor = _ref6[1];
 
     var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
-    return _makeEnumerableDescriptor(defineProp$(Type, propName, [target, descriptor], defaultValue));
+
+    descriptor = descriptor || _descriptorForSettable(Type, propName, target);
+    return defineProp$(Type, propName, _makeDescriptorEnumerable([target, descriptor]), defaultValue);
 };
 var errorIfNotTypeOnTarget = fjl.curry(errorIfNotTypeOnTarget$);
 var defineProp = fjl.curry(defineProp$);
@@ -269,7 +271,7 @@ var defineEnumPropNumber = defineEnumProp(Number);
 var defineEnumPropString = defineEnumProp(String);
 
 exports._descriptorForSettable = _descriptorForSettable;
-exports._makeEnumerableDescriptor = _makeEnumerableDescriptor;
+exports._makeDescriptorEnumerable = _makeDescriptorEnumerable;
 exports.errorIfNotTypeOnTarget$ = errorIfNotTypeOnTarget$;
 exports.defineProp$ = defineProp$;
 exports.defineEnumProp$ = defineEnumProp$;

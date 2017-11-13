@@ -4,7 +4,7 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._makeEnumerableDescriptor = exports._descriptorForSettable = undefined;
+    exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._makeDescriptorEnumerable = exports._descriptorForSettable = undefined;
 
 
     /** ============================================================= */
@@ -54,12 +54,12 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
 
 
     /**
-     * @function module:fjlMutable._makeEnumerableDescriptor
+     * @function module:fjlMutable._makeDescriptorEnumerable
      * @param {TargetDescriptorTuple} - [target, descriptor] tuple.
      * @returns {TargetDescriptorTuple} - Array of target and descriptor.
      * @private
      */
-    _makeEnumerableDescriptor = exports._makeEnumerableDescriptor = ([target, descriptor]) => {
+    _makeDescriptorEnumerable = exports._makeDescriptorEnumerable = ([target, descriptor]) => {
         descriptor.enumerable = true;
         return [target, descriptor];
     },
@@ -105,7 +105,10 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
      * @param [defaultValue=undefined] {*}
      * @returns {TargetDescriptorTuple}
      */
-    defineEnumProp$ = exports.defineEnumProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) => _makeEnumerableDescriptor(defineProp$(Type, propName, [target, descriptor], defaultValue)),
+    defineEnumProp$ = exports.defineEnumProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) => {
+        descriptor = descriptor || _descriptorForSettable(Type, propName, target);
+        return defineProp$(Type, propName, _makeDescriptorEnumerable([target, descriptor]), defaultValue);
+    },
 
 
     /**

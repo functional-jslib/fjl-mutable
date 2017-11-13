@@ -16,7 +16,7 @@
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._makeEnumerableDescriptor = exports._descriptorForSettable = undefined;
+    exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._makeDescriptorEnumerable = exports._descriptorForSettable = undefined;
 
     var _slicedToArray = function () {
         function sliceIterator(arr, i) {
@@ -100,12 +100,12 @@
 
 
     /**
-     * @function module:fjlMutable._makeEnumerableDescriptor
+     * @function module:fjlMutable._makeDescriptorEnumerable
      * @param {TargetDescriptorTuple} - [target, descriptor] tuple.
      * @returns {TargetDescriptorTuple} - Array of target and descriptor.
      * @private
      */
-    _makeEnumerableDescriptor = exports._makeEnumerableDescriptor = function _makeEnumerableDescriptor(_ref) {
+    _makeDescriptorEnumerable = exports._makeDescriptorEnumerable = function _makeDescriptorEnumerable(_ref) {
         var _ref2 = _slicedToArray(_ref, 2),
             target = _ref2[0],
             descriptor = _ref2[1];
@@ -167,7 +167,9 @@
             descriptor = _ref6[1];
 
         var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
-        return _makeEnumerableDescriptor(defineProp$(Type, propName, [target, descriptor], defaultValue));
+
+        descriptor = descriptor || _descriptorForSettable(Type, propName, target);
+        return defineProp$(Type, propName, _makeDescriptorEnumerable([target, descriptor]), defaultValue);
     },
 
 
