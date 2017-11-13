@@ -96,10 +96,14 @@ export const
      * @param [defaultValue=undefined] {*}
      * @returns {TargetDescriptorTuple}
      */
-    defineEnumProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) =>
-        _makeDescriptorEnumerable (
-            defineProp$(Type, propName, [target, descriptor], defaultValue)
-        ),
+    defineEnumProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) => {
+        descriptor = descriptor || _descriptorForSettable(Type, propName, target);
+        return defineProp$(
+            Type, propName,
+            _makeDescriptorEnumerable([target, descriptor]),
+            defaultValue
+        );
+    },
 
     /**
      * @function module:fjlMutable.errorIfNotTypeOnTarget

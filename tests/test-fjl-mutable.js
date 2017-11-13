@@ -1,7 +1,9 @@
 import {assert, expect} from 'chai';
 import {
     _descriptorForSettable,
-    _makeDescriptorEnumerable, defineProp$,
+    _makeDescriptorEnumerable,
+    defineProp$,
+    defineEnumProp$,
     errorIfNotTypeOnTarget$,
 }
     from "../src/fjlMutable";
@@ -70,7 +72,7 @@ describe ('#fjlMutable', function () {
         });
     });
 
-    describe ('defineProp$', function () {
+    describe ('#defineProp$', function () {
         const someTarget = {},
             propName = 'someNum',
             [target, descriptor] = defineProp$(Number, propName, [someTarget]);
@@ -104,5 +106,44 @@ describe ('#fjlMutable', function () {
             expect(descriptor2.enumerable).to.equal(true);
         });
     });
+
+    describe ('#defineEnumProp$', function () {
+        const someTarget = {},
+            propName = 'someNum',
+            [target, descriptor] = defineEnumProp$(Number, propName, [someTarget]);
+        it ('should return a `target` and `descriptor` pair (tuple)', function () {
+            expect(target).to.equal(someTarget);
+            expect(!!descriptor).to.equal(true);
+        });
+        it ('should define property `propName` on `target`', function () {
+            expect(target.hasOwnProperty(propName)).to.equal(true);
+        });
+        it ('should set `enumerable` to `true` on returned descriptor', function () {
+            expect(descriptor.enumerable).to.equal(true);
+            expect(Object.getOwnPropertyDescriptor(target, propName).enumerable).to.equal(true);
+        });
+        it ('should return a target whose defined `propName` throws an error when ' +
+            'the wrong type is passed in', function () {
+            assert.throws(() => target[propName] = 'some value', Error);
+        });
+        it ('should return a target whose defined `propName` doesn\'t throw' +
+            'an error when the correct type of value is passed in', function () {
+            target[propName] = 99;
+            expect(target[propName]).to.equal(99);
+        });
+        it ('should allow the user to pass in his/her own `descriptor`', function () {
+            const somePropName = 'somePropName',
+                someValue = (new Date()).getTime(),
+                customDescriptor = {
+                    value: someValue,
+                    enumerable: false
+                },
+                [target2, descriptor2] = defineEnumProp$(Number, somePropName, [someTarget, customDescriptor]);
+            assert.throws(() => target2[somePropName] = 99, Error);
+            expect(target2[somePropName]).to.equal(someValue);
+            expect(descriptor2).to.equal(customDescriptor);
+            expect(descriptor2.enumerable).to.equal(true);
+        });
+    })
 
 });
