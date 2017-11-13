@@ -109,7 +109,11 @@ gulp.task('clean', () => {
     return deleteFilePaths(pathsToDelete);
 });
 
-gulp.task('eslint', () => gulp.src(['./src/**/*.js', '!node_modules/**']).pipe(eslintPipe()));
+gulp.task('eslint', () => gulp.src([
+    './src/**/*.js',
+    './tests/**/*-test.js',
+    '!node_modules/**'
+]).pipe(eslintPipe()));
 
 gulp.task('umd', ['eslint'], () =>
     gulp.src(srcsGlob)
@@ -210,11 +214,6 @@ gulp.task('readme', [
         .pipe(gulp.dest('./')));
 
 gulp.task('build', ['build-js']);
-
-gulp.task('tests', ['eslint'], () =>
-    gulp.src(gulpConfig.tests.srcs)
-        .pipe(gulpBabel(gulpConfig.tests.babel))
-        .pipe(mocha(gulpConfig.tests.mocha)));
 
 gulp.task('watch', ['build'], () =>
     gulp.watch([

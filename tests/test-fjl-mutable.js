@@ -144,6 +144,6 @@ describe ('#fjlMutable', function () {
             expect(descriptor2).to.equal(customDescriptor);
             expect(descriptor2.enumerable).to.equal(true);
         });
-    })
+    });
 
 });
