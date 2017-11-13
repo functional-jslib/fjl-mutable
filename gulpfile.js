@@ -163,7 +163,7 @@ gulp.task('iife', ['eslint', 'version'], () =>
     })));
 
 gulp.task('es6-module', ['eslint', 'version'], () =>
-    gulp.src('./src/fjl.errorThrowing.js')
+    gulp.src('./src/fjlMutable.js')
         .pipe(gulpRollup({external: ['fjl-error-throwing', 'fjl']}, {
             moduleName: iifeModuleName,
             format: 'es',
