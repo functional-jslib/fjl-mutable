@@ -348,8 +348,9 @@ defineEnumPropString = exports.defineEnumPropString = defineEnumProp(String);
  */
 
 /**
- * @typedef {Array.<TypeRef, String, [TargetDescriptorTuple], [*|null|undefined]>}  DefinePropArgsTuple
- * @description Arguments list for `defineProp` and/or `defineEnumProp`;  E.g.,
+ * @typedef {Array.<TypeRef, String, TargetDescriptorTuple, *>}  DefinePropArgsTuple
+ * @description Arguments list for `defineProp` and/or `defineEnumProp` (note: some
+ *  parts of array/tuple are options (namely the last two args));  E.g.,
  *  ```
  *  [String, 'somePropName', [someTarget], 'someDefaultValue] // ...
  *  ```

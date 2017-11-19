@@ -1,5 +1,5 @@
-# fjl-mutable (WIP (in ALPHA))
+# fjl-mutable (Beta)
 Helpers for setting mutable strictly typed properties on objects.
 
-## Todos
-- [ ] - Add tests.
+## Docs
+See jsdocs for usage

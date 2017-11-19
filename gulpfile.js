@@ -197,7 +197,7 @@ gulp.task('jsdoc', () =>
                     opts: {
                         'template': 'templates/default',  // same as -t templates/default
                         'encoding': 'utf8',               // same as -e utf8
-                        'destination': './jsdocs/',       // same as -d ./out/
+                        'destination': './docs/',       // same as -d ./out/
                         'recurse': true
                     }
                 }))
