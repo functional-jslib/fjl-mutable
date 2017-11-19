@@ -256,7 +256,50 @@ describe ('#fjlMutable', function () {
             });
         });
 
-        it ('should be able to set types with argTuples of length of `3`([target, descriptor] tuple) and `4` (defaultValue)');
+        it ('should be able to set types with argTuples of length of `3`(with [target, descriptor] tuple) ' +
+            'and `4` (with defaultValue)', function () {
+            generateTargetData().map(argTuple => {
+                const [args, target] = argTuple;
+                // log(argTuple);
+                // Return new version of `argTuple` (seeded with `[target]` and `defaultValue`)
+                return [
+                    // Add `[target]` and `defaultValue` to arg lists
+                    args.map((argSet, ind) => {
+                        const [correct, _] = seedArgTuple_correctIncorrectValues[ind];
+                        return argSet.concat([[target], correct])
+                    }),
+                    target
+                ];
+
+            }).forEach(args => {
+                // log(args);
+
+                // Call test subject
+                const result = defineEnumProps$.apply(null, args),
+                    [target] = result[0],
+                    propNames = args[0].map(x => x[1]);
+
+                // log(propNames, '\n', target);
+
+                // Ensure targets have enumerable props set
+                propNames.forEach((name, ind) => {
+                    const [correct, inCorrect] = seedArgTuple_correctIncorrectValues[ind];
+
+                    // Ensure prop exists
+                    expect(target.hasOwnProperty(name)).to.equal(true);
+
+                    // Ensure prop is enumerable
+                    expect(Object.getOwnPropertyDescriptor(target, name).enumerable)
+                        .to.equal(true);
+
+                    // Ensure setter obeys type rule
+                    assert.throws(() => target[name] = inCorrect, Error);
+
+                    // Ensure setter obeys type rule
+                    expect(target[name] = correct).to.equal(correct);
+                });
+            });
+        });
 
     });
 
@@ -360,10 +403,32 @@ describe ('#fjlMutable', function () {
             });
         });
 
-        it ('should be able to set types with argTuples of length of `3`([target, descriptor] tuple) and `4` (defaultValue)');
+        it ('should be able to set types with argTuples of length of `3` ' +
+            '([target, descriptor] tuple) and `4` (defaultValue)', function () {
+            generateTargetData().map(argTuple => {
+                const [args, target] = argTuple;
+                // log(argTuple);
+                // Return new version of `argTuple` (seeded with `[target]` and `defaultValue`)
+                return [
+                    // Add `[target]` and `defaultValue` to arg lists
+                    args.map((argSet, ind) => {
+                        const [correct, _] = seedArgTuple_correctIncorrectValues[ind];
+                        return argSet.concat([[target], correct])
+                    }),
+                    target
+                ];
+            }).forEach(args => {
+                // log(args);
+                const
+                    result = defineProps$.apply(null, args);
+                expect(result.length).to.equal(args[0].length);
+                result.forEach(([t, d]) => {
+                    expect(t).to.be.instanceOf(Object);
+                    expect(['set', 'get'].every(key => d[key] instanceof Function));
+                });
+            });
+        });
 
     });
-
-
 
 });
