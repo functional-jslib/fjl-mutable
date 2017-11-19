@@ -190,6 +190,30 @@ var slicedToArray = function () {
  * @module fjlMutable
  */
 /**
+ * @param enumerable {Boolean}
+ * @returns {function(*, *)|PropsDefinerCall}
+ * @private
+ */
+function _getDefineProps$(enumerable) {
+    var op$ = enumerable ? defineEnumProp$ : defineProp$;
+    return function (argTuples, target) {
+        var targetDescriptorTupleArg = [[target]];
+        return argTuples.map(function (argTuple) {
+            var result = void 0;
+            switch (argTuple.length) {
+                case 2:
+                    result = fjl.apply(op$, argTuple.concat(targetDescriptorTupleArg));
+                    break;
+                default:
+                    result = fjl.apply(op$, argTuple);
+                    break;
+            }
+            return result;
+        });
+    };
+}
+
+/**
  * @note Custom jsdoc type definitions defined toward end of file.
  */
 var _descriptorForSettable = function _descriptorForSettable(Type, propName, target) {
@@ -239,9 +263,13 @@ var defineEnumProp$ = function defineEnumProp$(Type, propName, _ref5) {
     descriptor = descriptor || _descriptorForSettable(Type, propName, target);
     return defineProp$(Type, propName, _makeDescriptorEnumerable([target, descriptor]), defaultValue);
 };
+var defineEnumProps$ = _getDefineProps$(true);
+var defineProps$ = _getDefineProps$(false);
 var errorIfNotTypeOnTarget = fjl.curry(errorIfNotTypeOnTarget$);
 var defineProp = fjl.curry(defineProp$);
 var defineEnumProp = fjl.curry(defineEnumProp$);
+var defineProps = fjl.curry(defineProps$);
+var defineEnumProps = fjl.curry(defineEnumProps$);
 var definePropArray = defineProp(Array);
 var definePropBoolean = defineProp(Boolean);
 var definePropFunction = defineProp(Function);
@@ -273,14 +301,34 @@ var defineEnumPropString = defineEnumProp(String);
  * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
  */
 
+/**
+ * @typedef {Array.<TypeRef, String, [TargetDescriptorTuple], [*|null|undefined]>}  DefinePropArgsTuple
+ * @description Arguments list for `defineProp` and/or `defineEnumProp`;  E.g.,
+ *  ```
+ *  [String, 'somePropName', [someTarget], 'someDefaultValue] // ...
+ *  ```
+ */
+
+/**
+ * @typedef {Function} PropsDefinerCall
+ * @description Same type as `defineProp` and `defineEnumProp`
+ * @param argsTuple {DefinePropArgsTuple}
+ * @param target {Target}
+ * @returns {Array.<TargetDescriptorTuple>}
+ */
+
 exports._descriptorForSettable = _descriptorForSettable;
 exports._makeDescriptorEnumerable = _makeDescriptorEnumerable;
 exports.errorIfNotTypeOnTarget$ = errorIfNotTypeOnTarget$;
 exports.defineProp$ = defineProp$;
 exports.defineEnumProp$ = defineEnumProp$;
+exports.defineEnumProps$ = defineEnumProps$;
+exports.defineProps$ = defineProps$;
 exports.errorIfNotTypeOnTarget = errorIfNotTypeOnTarget;
 exports.defineProp = defineProp;
 exports.defineEnumProp = defineEnumProp;
+exports.defineProps = defineProps;
+exports.defineEnumProps = defineEnumProps;
 exports.definePropArray = definePropArray;
 exports.definePropBoolean = definePropBoolean;
 exports.definePropFunction = definePropFunction;

@@ -1,9 +1,33 @@
-import { curry, isUndefined } from 'fjl';
+import { apply, curry, isUndefined } from 'fjl';
 import { errorIfNotType, getTypeName } from 'fjl-error-throwing';
 
 /**
  * @module fjlMutable
  */
+/**
+ * @param enumerable {Boolean}
+ * @returns {function(*, *)|PropsDefinerCall}
+ * @private
+ */
+function _getDefineProps$ (enumerable) {
+    const op$ = enumerable ? defineEnumProp$ : defineProp$;
+    return (argTuples, target) => {
+        const targetDescriptorTupleArg = [[target]];
+        return argTuples.map(argTuple => {
+            let result;
+            switch (argTuple.length) {
+                case 2:
+                    result = apply(op$, argTuple.concat(targetDescriptorTupleArg));
+                    break;
+                default:
+                    result = apply(op$, argTuple);
+                    break;
+            }
+            return result;
+        });
+    };
+}
+
 /**
  * @note Custom jsdoc type definitions defined toward end of file.
  */
@@ -42,9 +66,13 @@ const defineEnumProp$ = (Type, propName, [target, descriptor], defaultValue = un
             defaultValue
         );
     };
+const defineEnumProps$ = _getDefineProps$(true);
+const defineProps$ = _getDefineProps$(false);
 const errorIfNotTypeOnTarget = curry(errorIfNotTypeOnTarget$);
 const defineProp = curry(defineProp$);
 const defineEnumProp = curry(defineEnumProp$);
+const defineProps = curry(defineProps$);
+const defineEnumProps = curry(defineEnumProps$);
 const definePropArray = defineProp(Array);
 const definePropBoolean = defineProp(Boolean);
 const definePropFunction = defineProp(Function);
@@ -76,4 +104,20 @@ const defineEnumPropString = defineEnumProp(String);
  * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
  */
 
-export { _descriptorForSettable, _makeDescriptorEnumerable, errorIfNotTypeOnTarget$, defineProp$, defineEnumProp$, errorIfNotTypeOnTarget, defineProp, defineEnumProp, definePropArray, definePropBoolean, definePropFunction, definePropNumber, definePropString, defineEnumPropArray, defineEnumPropBoolean, defineEnumPropFunction, defineEnumPropNumber, defineEnumPropString };
+/**
+ * @typedef {Array.<TypeRef, String, [TargetDescriptorTuple], [*|null|undefined]>}  DefinePropArgsTuple
+ * @description Arguments list for `defineProp` and/or `defineEnumProp`;  E.g.,
+ *  ```
+ *  [String, 'somePropName', [someTarget], 'someDefaultValue] // ...
+ *  ```
+ */
+
+/**
+ * @typedef {Function} PropsDefinerCall
+ * @description Same type as `defineProp` and `defineEnumProp`
+ * @param argsTuple {DefinePropArgsTuple}
+ * @param target {Target}
+ * @returns {Array.<TargetDescriptorTuple>}
+ */
+
+export { _descriptorForSettable, _makeDescriptorEnumerable, errorIfNotTypeOnTarget$, defineProp$, defineEnumProp$, defineEnumProps$, defineProps$, errorIfNotTypeOnTarget, defineProp, defineEnumProp, defineProps, defineEnumProps, definePropArray, definePropBoolean, definePropFunction, definePropNumber, definePropString, defineEnumPropArray, defineEnumPropBoolean, defineEnumPropFunction, defineEnumPropNumber, defineEnumPropString };

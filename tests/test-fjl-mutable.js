@@ -1,4 +1,5 @@
 import {assert, expect} from 'chai';
+import {unfoldr, keys, isFunction} from 'fjl';
 import {
     _descriptorForSettable,
     _makeDescriptorEnumerable,
@@ -148,14 +149,112 @@ describe ('#fjlMutable', function () {
     });
 
     describe ('#defineNumProps$', function () {
-        it ('should be able to define many enum properties on given target', function () {
-            const target = {};
-            defineEnumProps$([
+        const
+            seedArgTuples = [
                 [String, 'someStringProp'],
-                [Number, 'someNumberProp']
+                [Number, 'someNumberProp'],
+                [Boolean, 'someBooleanProp'],
+                [Function, 'someFunctionProp'],
+                [Array, 'someArrayProp']
             ],
-                target);
+            seedArgTuple_correctIncorrectValues = [
+                ['99 bottles..', 99],
+                [99, 'should-be-number'],
+                [false, 1],
+                [function () {}, 99, 99],
+                [[1, 2, 3, 4, 5], function () {}]
+            ],
+            seedTarget = seedArgTuples.reduce((agg, tuple) => {
+                    agg[tuple[1]] = null;
+                    return agg;
+                }, {}),
+            seedPropNames = keys(seedTarget),
+            generateTargetData = () => unfoldr((argTuples, ind, _out) => {
+                    const
+                        _argTuples = argTuples.slice(0),
+                        out = [_argTuples.slice(0), {}];
+                    if (!_out.length) {
+                        return [out, _argTuples];
+                    }
+                    else if (_argTuples.length) {
+                        _argTuples.pop();
+                        return [out, _argTuples];
+                    }
+                    return undefined;
+                },
+                seedArgTuples);
+
+        it ('Data for tests should be in correct format', function () {
+            // Test our test parameters
+            expect(seedPropNames.length).to.equal(seedArgTuples.length);
+            seedPropNames.forEach((name, ind) => {
+                expect(seedArgTuples[ind][1]).to.equal(name);
+            });
+            expect(seedPropNames.length).to.equal(seedArgTuples.length);
         });
+
+        it ('should be able to define many enum props on given target with only argTuples of length `2`', function () {
+            generateTargetData().forEach(args => {
+                // log(args);
+                const result = defineEnumProps$.apply(null, args),
+                    [target] = result[0],
+                    propNames = args[0].map(x => x[1]);
+
+                // log(propNames, '\n', target);
+
+                // Ensure targets have enumerable props set
+                propNames.forEach(name => {
+                    expect(target.hasOwnProperty(name)).to.equal(true);
+                    expect(Object.getOwnPropertyDescriptor(target, name).enumerable)
+                        .to.equal(true);
+                });
+            });
+        });
+
+        it ('should have defined properties that throw errors when they are set to the wrong type' +
+            'and no errors when set to the correct type', function () {
+            generateTargetData().forEach(args => {
+                // log(args);
+                const result = defineEnumProps$.apply(null, args),
+                    [target] = result[0],
+                    propNames = args[0].map(x => x[1]);
+
+                // log(propNames, '\n', target);
+
+                // Ensure targets have enumerable props set
+                propNames.forEach((name, ind) => {
+                    const [correct, inCorrect] = seedArgTuple_correctIncorrectValues[ind];
+
+                    // Ensure prop exists
+                    expect(target.hasOwnProperty(name)).to.equal(true);
+
+                    // Ensure prop is enumerable
+                    expect(Object.getOwnPropertyDescriptor(target, name).enumerable)
+                        .to.equal(true);
+
+                    // Ensure setter obeys type rule
+                    assert.throws(() => target[name] = inCorrect, Error);
+
+                    // Ensure setter obeys type rule
+                    expect(target[name] = correct).to.equal(correct);
+                });
+            });
+        });
+
+        it ('should return target and descriptor tuples from operation', function () {
+            generateTargetData().forEach(args => {
+                // log(args);
+                const
+                    result = defineEnumProps$.apply(null, args);
+                expect(result.length).to.equal(args[0].length);
+                result.forEach(([t, d]) => {
+                    expect(t).to.be.instanceOf(Object);
+                    expect(d.enumerable).to.equal(true);
+                    expect(['set', 'get'].every(key => d[key] instanceof Function));
+                });
+            });
+        });
+
     });
 
 });

@@ -4,14 +4,38 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
     Object.defineProperty(exports, "__esModule", {
         value: true
     });
-    exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._makeDescriptorEnumerable = exports._descriptorForSettable = undefined;
+    exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProps = exports.defineProps = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineProps$ = exports.defineEnumProps$ = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._makeDescriptorEnumerable = exports._descriptorForSettable = undefined;
 
 
     /**
-     * @note Custom jsdoc type definitions defined toward end of file.
+     * @param enumerable {Boolean}
+     * @returns {function(*, *)|PropsDefinerCall}
+     * @private
      */
     /**
      * @module fjlMutable
+     */
+    function _getDefineProps$(enumerable) {
+        const op$ = enumerable ? defineEnumProp$ : defineProp$;
+        return (argTuples, target) => {
+            const targetDescriptorTupleArg = [[target]];
+            return argTuples.map(argTuple => {
+                let result;
+                switch (argTuple.length) {
+                    case 2:
+                        result = (0, _fjl.apply)(op$, argTuple.concat(targetDescriptorTupleArg));
+                        break;
+                    default:
+                        result = (0, _fjl.apply)(op$, argTuple);
+                        break;
+                }
+                return result;
+            });
+        };
+    }
+
+    /**
+     * @note Custom jsdoc type definitions defined toward end of file.
      */
     const
 
@@ -95,6 +119,26 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
 
 
     /**
+     * Allows you to define multiple enum props at once on target.
+     * @function module:fjlMutable.defineEnumProps$
+     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineEnumProp`.
+     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineEnumProp`.
+     */
+    defineEnumProps$ = exports.defineEnumProps$ = _getDefineProps$(true),
+
+
+    /**
+     * Allows you to define multiple props at once on target.
+     * @function module:fjlMutable.defineProps$
+     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineProp`.
+     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineProp`.
+     */
+    defineProps$ = exports.defineProps$ = _getDefineProps$(false),
+
+
+    /**
      * @function module:fjlMutable.errorIfNotTypeOnTarget
      * @param Type {TypeRef} - {String|Function}
      * @param propName {String}
@@ -128,6 +172,30 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
      * @curried
      */
     defineEnumProp = exports.defineEnumProp = (0, _fjl.curry)(defineEnumProp$),
+
+
+    /**
+     * Same as `defineProps$` but curried:
+     *  Allows you to define multiple props at once on target.
+     * @function module:fjlMutable.defineProps
+     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineProp`.
+     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineProp`.
+     * @curried
+     */
+    defineProps = exports.defineProps = (0, _fjl.curry)(defineProps$),
+
+
+    /**
+     * Same as `defineEnumProps$` but curried:
+     *  Allows you to define multiple enum props at once on target.
+     * @function module:fjlMutable.defineEnumProps
+     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineEnumProp`.
+     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineEnumProp`.
+     * @curried
+     */
+    defineEnumProps = exports.defineEnumProps = (0, _fjl.curry)(defineEnumProps$),
 
 
     /**
@@ -257,5 +325,21 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
 
     /**
      * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
+     */
+
+    /**
+     * @typedef {Array.<TypeRef, String, [TargetDescriptorTuple], [*|null|undefined]>}  DefinePropArgsTuple
+     * @description Arguments list for `defineProp` and/or `defineEnumProp`;  E.g.,
+     *  ```
+     *  [String, 'somePropName', [someTarget], 'someDefaultValue] // ...
+     *  ```
+     */
+
+    /**
+     * @typedef {Function} PropsDefinerCall
+     * @description Same type as `defineProp` and `defineEnumProp`
+     * @param argsTuple {DefinePropArgsTuple}
+     * @param target {Target}
+     * @returns {Array.<TargetDescriptorTuple>}
      */
 });
