@@ -4,6 +4,7 @@ import {
     _makeDescriptorEnumerable,
     defineProp$,
     defineEnumProp$,
+    defineEnumProps$,
     errorIfNotTypeOnTarget$,
 }
     from "../src/fjlMutable";
@@ -143,6 +144,17 @@ describe ('#fjlMutable', function () {
             expect(target2[somePropName]).to.equal(someValue);
             expect(descriptor2).to.equal(customDescriptor);
             expect(descriptor2.enumerable).to.equal(true);
+        });
+    });
+
+    describe ('#defineNumProps$', function () {
+        it ('should be able to define many enum properties on given target', function () {
+            const target = {};
+            defineEnumProps$([
+                [String, 'someStringProp'],
+                [Number, 'someNumberProp']
+            ],
+                target);
         });
     });
 

@@ -1,9 +1,33 @@
 /**
  * @module fjlMutable
  */
-import {isUndefined, curry} from 'fjl';
+import {isUndefined, curry, apply} from 'fjl';
 
 import {errorIfNotType, getTypeName} from 'fjl-error-throwing';
+
+/**
+ * @param enumerable {Boolean}
+ * @returns {function(*, *)|PropsDefinerCall}
+ * @private
+ */
+function _getDefineProps$ (enumerable) {
+    const op$ = enumerable ? defineEnumProp$ : defineProp$;
+    return (argTuples, target) => {
+        const targetDescriptorTupleArg = [[target]];
+        return argTuples.map(argTuple => {
+            let result;
+            switch (argTuple.length) {
+                case 2:
+                    result = apply(op$, argTuple.concat(targetDescriptorTupleArg));
+                    break;
+                default:
+                    result = apply(op$, argTuple);
+                    break;
+            }
+            return result;
+        });
+    };
+}
 
 /**
  * @note Custom jsdoc type definitions defined toward end of file.
@@ -89,6 +113,24 @@ export const
     },
 
     /**
+     * Allows you to define multiple enum props at once on target.
+     * @function module:fjlMutable.defineEnumProps$
+     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineEnumProp`.
+     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineEnumProp`.
+     */
+    defineEnumProps$ = _getDefineProps$(true),
+
+    /**
+     * Allows you to define multiple props at once on target.
+     * @function module:fjlMutable.defineProps$
+     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineProp`.
+     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineProp`.
+     */
+    defineProps$ = _getDefineProps$(false),
+
+    /**
      * @function module:fjlMutable.errorIfNotTypeOnTarget
      * @param Type {TypeRef} - {String|Function}
      * @param propName {String}
@@ -120,6 +162,28 @@ export const
      * @curried
      */
     defineEnumProp = curry(defineEnumProp$),
+
+    /**
+     * Same as `defineProps$` but curried:
+     *  Allows you to define multiple props at once on target.
+     * @function module:fjlMutable.defineProps
+     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineProp`.
+     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineProp`.
+     * @curried
+     */
+    defineProps = curry(defineProps$),
+
+    /**
+     * Same as `defineEnumProps$` but curried:
+     *  Allows you to define multiple enum props at once on target.
+     * @function module:fjlMutable.defineEnumProps
+     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineEnumProp`.
+     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineEnumProp`.
+     * @curried
+     */
+    defineEnumProps = curry(defineEnumProps$),
 
     /**
      * @function module:fjlMutable.definePropArray
@@ -241,4 +305,20 @@ export const
 
 /**
  * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
+ */
+
+/**
+ * @typedef {Array.<TypeRef, String, [TargetDescriptorTuple], [*|null|undefined]>}  DefinePropArgsTuple
+ * @description Arguments list for `defineProp` and/or `defineEnumProp`;  E.g.,
+ *  ```
+ *  [String, 'somePropName', [someTarget], 'someDefaultValue] // ...
+ *  ```
+ */
+
+/**
+ * @typedef {Function} PropsDefinerCall
+ * @description Same type as `defineProp` and `defineEnumProp`
+ * @param argsTuple {DefinePropArgsTuple}
+ * @param target {Target}
+ * @returns {Array.<TargetDescriptorTuple>}
  */
