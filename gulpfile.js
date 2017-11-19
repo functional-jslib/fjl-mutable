@@ -190,7 +190,7 @@ gulp.task('uglify', ['iife'], () => {
 gulp.task('build-js', ['version', 'uglify', 'cjs', 'amd', 'umd', 'es6-module']);
 
 gulp.task('jsdoc', () =>
-    deleteFilePaths(['./jsdocs/**/*'])
+    deleteFilePaths(['./docs/**/*'])
         .then(_ =>
             gulp.src(['README.md', './src/**/*.js'], {read: false})
                 .pipe(jsdoc({

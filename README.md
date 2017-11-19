@@ -2,4 +2,8 @@
 Helpers for setting mutable strictly typed properties on objects.
 
 ## Docs
-See jsdocs for usage
+JsDocs here:
+
+https://functional-jslib.github.io/fjl-mutable/module-fjlMutable.html
+
+## License
