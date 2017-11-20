@@ -149,7 +149,7 @@ describe ('#fjlMutable', function () {
         });
     });
 
-    describe ('#defineEnumProps$', function () {
+    describe ('#defineProps$', function () {
         const
             seedArgTuples = [
                 [String, 'someStringProp'],
@@ -169,6 +169,134 @@ describe ('#fjlMutable', function () {
                     agg[tuple[1]] = null;
                     return agg;
                 }, {}),
+            seedPropNames = keys(seedTarget),
+            generateTargetData = () => unfoldr((argTuples, ind, _out) => {
+                    const
+                        _argTuples = argTuples.slice(0),
+                        out = [_argTuples.slice(0), {}];
+                    if (!_out.length) {
+                        return [out, _argTuples];
+                    }
+                    else if (_argTuples.length) {
+                        _argTuples.pop();
+                        return [out, _argTuples];
+                    }
+                    return undefined;
+                },
+                seedArgTuples);
+
+        it ('data for tests should be in correct format', function () {
+            // Test our test parameters
+            expect(seedPropNames.length).to.equal(seedArgTuples.length);
+            seedPropNames.forEach((name, ind) => {
+                expect(seedArgTuples[ind][1]).to.equal(name);
+            });
+            expect(seedPropNames.length).to.equal(seedArgTuples.length);
+        });
+
+        it ('should be able to define many props on given target with only argTuples of length `2`', function () {
+            generateTargetData().forEach(args => {
+                // log(args);
+                const result = defineProps$.apply(null, args),
+                    [target] = result[0],
+                    propNames = args[0].map(x => x[1]);
+
+                // log(propNames, '\n', target);
+
+                // Ensure targets have props set
+                propNames.forEach(name => {
+                    expect(target.hasOwnProperty(name)).to.equal(true);
+                });
+            });
+        });
+
+        it ('should have defined properties that throw errors when they are set to the wrong type' +
+            'and no errors when set to the correct type', function () {
+            generateTargetData().forEach(args => {
+                // log(args);
+                const result = defineProps$.apply(null, args),
+                    [target] = result[0],
+                    propNames = args[0].map(x => x[1]);
+
+                // log(propNames, '\n', target);
+
+                // Ensure targets have props set
+                propNames.forEach((name, ind) => {
+                    const [correct, inCorrect] = seedArgTuple_correctIncorrectValues[ind];
+
+                    // Ensure prop exists
+                    expect(target.hasOwnProperty(name)).to.equal(true);
+
+                    // Ensure setter obeys type rule
+                    assert.throws(() => target[name] = inCorrect, Error);
+
+                    // Ensure setter obeys type rule
+                    expect(target[name] = correct).to.equal(correct);
+                });
+            });
+        });
+
+        it ('should return target and descriptor tuples from operation', function () {
+            generateTargetData().forEach(args => {
+                // log(args);
+                const
+                    result = defineProps$.apply(null, args);
+                expect(result.length).to.equal(args[0].length);
+                result.forEach(([t, d]) => {
+                    expect(t).to.be.instanceOf(Object);
+                    expect(['set', 'get'].every(key => d[key] instanceof Function));
+                });
+            });
+        });
+
+        it ('should be able to set types with argTuples of length of `3` ' +
+            '([target, descriptor] tuple) and `4` (defaultValue)', function () {
+            generateTargetData().map(argTuple => {
+                const [args, target] = argTuple;
+                // log(argTuple);
+                // Return new version of `argTuple` (seeded with `[target]` and `defaultValue`)
+                return [
+                    // Add `[target]` and `defaultValue` to arg lists
+                    args.map((argSet, ind) => {
+                        const [correct, _] = seedArgTuple_correctIncorrectValues[ind];
+                        return argSet.concat([[target], correct])
+                    }),
+                    target
+                ];
+            }).forEach(args => {
+                // log(args);
+                const
+                    result = defineProps$.apply(null, args);
+                expect(result.length).to.equal(args[0].length);
+                result.forEach(([t, d]) => {
+                    expect(t).to.be.instanceOf(Object);
+                    expect(['set', 'get'].every(key => d[key] instanceof Function));
+                });
+            });
+        });
+
+    });
+
+    describe ('#defineEnumProps$', function () {
+        const
+            seedArgTuples = [
+                [String, 'someStringProp'],
+                [Number, 'someNumberProp'],
+                [Boolean, 'someBooleanProp'],
+                [Function, 'someFunctionProp'],
+                [Array, 'someArrayProp']
+            ],
+            seedArgTuple_correctIncorrectValues = [
+                ['99 bottles..', 99],
+                [99, 'should-be-number'],
+                [false, 1],
+                [function () {}, 99, 99],
+                [[1, 2, 3, 4, 5], function () {}]
+            ],
+            seedTarget = seedArgTuples.reduce((agg, tuple) => {
+                agg[tuple[1]] = null;
+                return agg;
+            }, {}),
             seedPropNames = keys(seedTarget),
             generateTargetData = () => unfoldr((argTuples, ind, _out) => {
                     const
@@ -297,134 +425,6 @@ describe ('#fjlMutable', function () {
 
                     // Ensure setter obeys type rule
                     expect(target[name] = correct).to.equal(correct);
-                });
-            });
-        });
-
-    });
-
-    describe ('#defineProps$', function () {
-        const
-            seedArgTuples = [
-                [String, 'someStringProp'],
-                [Number, 'someNumberProp'],
-                [Boolean, 'someBooleanProp'],
-                [Function, 'someFunctionProp'],
-                [Array, 'someArrayProp']
-            ],
-            seedArgTuple_correctIncorrectValues = [
-                ['99 bottles..', 99],
-                [99, 'should-be-number'],
-                [false, 1],
-                [function () {}, 99, 99],
-                [[1, 2, 3, 4, 5], function () {}]
-            ],
-            seedTarget = seedArgTuples.reduce((agg, tuple) => {
-                    agg[tuple[1]] = null;
-                    return agg;
-                }, {}),
-            seedPropNames = keys(seedTarget),
-            generateTargetData = () => unfoldr((argTuples, ind, _out) => {
-                    const
-                        _argTuples = argTuples.slice(0),
-                        out = [_argTuples.slice(0), {}];
-                    if (!_out.length) {
-                        return [out, _argTuples];
-                    }
-                    else if (_argTuples.length) {
-                        _argTuples.pop();
-                        return [out, _argTuples];
-                    }
-                    return undefined;
-                },
-                seedArgTuples);
-
-        it ('data for tests should be in correct format', function () {
-            // Test our test parameters
-            expect(seedPropNames.length).to.equal(seedArgTuples.length);
-            seedPropNames.forEach((name, ind) => {
-                expect(seedArgTuples[ind][1]).to.equal(name);
-            });
-            expect(seedPropNames.length).to.equal(seedArgTuples.length);
-        });
-
-        it ('should be able to define many props on given target with only argTuples of length `2`', function () {
-            generateTargetData().forEach(args => {
-                // log(args);
-                const result = defineProps$.apply(null, args),
-                    [target] = result[0],
-                    propNames = args[0].map(x => x[1]);
-
-                // log(propNames, '\n', target);
-
-                // Ensure targets have props set
-                propNames.forEach(name => {
-                    expect(target.hasOwnProperty(name)).to.equal(true);
-                });
-            });
-        });
-
-        it ('should have defined properties that throw errors when they are set to the wrong type' +
-            'and no errors when set to the correct type', function () {
-            generateTargetData().forEach(args => {
-                // log(args);
-                const result = defineProps$.apply(null, args),
-                    [target] = result[0],
-                    propNames = args[0].map(x => x[1]);
-
-                // log(propNames, '\n', target);
-
-                // Ensure targets have props set
-                propNames.forEach((name, ind) => {
-                    const [correct, inCorrect] = seedArgTuple_correctIncorrectValues[ind];
-
-                    // Ensure prop exists
-                    expect(target.hasOwnProperty(name)).to.equal(true);
-
-                    // Ensure setter obeys type rule
-                    assert.throws(() => target[name] = inCorrect, Error);
-
-                    // Ensure setter obeys type rule
-                    expect(target[name] = correct).to.equal(correct);
-                });
-            });
-        });
-
-        it ('should return target and descriptor tuples from operation', function () {
-            generateTargetData().forEach(args => {
-                // log(args);
-                const
-                    result = defineProps$.apply(null, args);
-                expect(result.length).to.equal(args[0].length);
-                result.forEach(([t, d]) => {
-                    expect(t).to.be.instanceOf(Object);
-                    expect(['set', 'get'].every(key => d[key] instanceof Function));
-                });
-            });
-        });
-
-        it ('should be able to set types with argTuples of length of `3` ' +
-            '([target, descriptor] tuple) and `4` (defaultValue)', function () {
-            generateTargetData().map(argTuple => {
-                const [args, target] = argTuple;
-                // log(argTuple);
-                // Return new version of `argTuple` (seeded with `[target]` and `defaultValue`)
-                return [
-                    // Add `[target]` and `defaultValue` to arg lists
-                    args.map((argSet, ind) => {
-                        const [correct, _] = seedArgTuple_correctIncorrectValues[ind];
-                        return argSet.concat([[target], correct])
-                    }),
-                    target
-                ];
-            }).forEach(args => {
-                // log(args);
-                const
-                    result = defineProps$.apply(null, args);
-                expect(result.length).to.equal(args[0].length);
-                result.forEach(([t, d]) => {
-                    expect(t).to.be.instanceOf(Object);
-                    expect(['set', 'get'].every(key => d[key] instanceof Function));
                 });
             });
         });

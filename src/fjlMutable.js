@@ -1,7 +1,7 @@
 /**
  * @module fjlMutable
  */
-import {isUndefined, curry, apply} from 'fjl';
+import {isUndefined, curry, apply, isType} from 'fjl';
 
 import {errorIfNotType, getTypeName} from 'fjl-error-throwing';
 
@@ -13,12 +13,16 @@ import {errorIfNotType, getTypeName} from 'fjl-error-throwing';
 function _getDefineProps$ (enumerable) {
     const op$ = enumerable ? defineEnumProp$ : defineProp$;
     return (argTuples, target) => {
-        const targetDescriptorTupleArg = [[target]];
+        const targetDescriptorTupleArg = [target];
         return argTuples.map(argTuple => {
             let result;
             switch (argTuple.length) {
                 case 2:
                     result = apply(op$, argTuple.concat(targetDescriptorTupleArg));
+                    break;
+                case 3:
+                    const [TypeRef, propName, defaultValue] = argTuple;
+                    result = apply(op$, [TypeRef, propName, target, defaultValue]);
                     break;
                 default:
                     result = apply(op$, argTuple);
@@ -65,6 +69,10 @@ export const
         return [target, descriptor];
     },
 
+    _targetDescriptorTuple = targetOrTargetDescrTuple =>
+        isType('Array', targetOrTargetDescrTuple) ? // Strict type check for array
+            targetOrTargetDescrTuple : [targetOrTargetDescrTuple],
+
     /**
      * @function module:fjlMutable.errorIfNotTypeOnTarget$
      * @param Type {TypeRef} - {String|Function}
@@ -82,32 +90,34 @@ export const
      * @function module:fjlMutable.defineProp$
      * @param Type {TypeRef} - {String|Function}
      * @param propName {String}
-     * @param {TargetDescriptorTuple} - [target, descriptor].
+     * @param target {TargetDescriptorTuple} - Target or array of target and descriptor ([target, descriptor]).
      * @param [defaultValue=undefined] {*}
      * @returns {TargetDescriptorTuple}
      */
-    defineProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) => {
-        descriptor = descriptor || _descriptorForSettable(Type, propName, target);
-        Object.defineProperty(target, propName, descriptor);
+    defineProp$ = (Type, propName, target, defaultValue = undefined) => {
+        const [_target, _descriptor] = _targetDescriptorTuple(target),
+            descriptor = _descriptor || _descriptorForSettable(Type, propName, _target);
+        Object.defineProperty(_target, propName, descriptor);
         if (!isUndefined(defaultValue)) {
-            target[propName] = defaultValue;
+            _target[propName] = defaultValue;
         }
-        return [target, descriptor];
+        return [_target, descriptor];
     },
 
     /**
      * @function module:fjlMutable.defineProp$
      * @param Type {TypeRef} - {String|Function}
      * @param propName {String}
-     * @param {TargetDescriptorTuple} - [target, descriptor].
+     * @param target {TargetDescriptorTuple} - Target or array of target and descriptor ([target, descriptor]).
      * @param [defaultValue=undefined] {*}
      * @returns {TargetDescriptorTuple}
      */
-    defineEnumProp$ = (Type, propName, [target, descriptor], defaultValue = undefined) => {
-        descriptor = descriptor || _descriptorForSettable(Type, propName, target);
+    defineEnumProp$ = (Type, propName, target, defaultValue = undefined) => {
+        const [_target, _descriptor] = _targetDescriptorTuple(target),
+            descriptor = _descriptor || _descriptorForSettable(Type, propName, _target);
         return defineProp$(
             Type, propName,
-            _makeDescriptorEnumerable([target, descriptor]),
+            _makeDescriptorEnumerable([_target, descriptor]),
             defaultValue
         );
     },

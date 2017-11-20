@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProps = exports.defineProps = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineProps$ = exports.defineEnumProps$ = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._makeDescriptorEnumerable = exports._descriptorForSettable = undefined;
+exports.defineEnumPropString = exports.defineEnumPropNumber = exports.defineEnumPropFunction = exports.defineEnumPropBoolean = exports.defineEnumPropArray = exports.definePropString = exports.definePropNumber = exports.definePropFunction = exports.definePropBoolean = exports.definePropArray = exports.defineEnumProps = exports.defineProps = exports.defineEnumProp = exports.defineProp = exports.errorIfNotTypeOnTarget = exports.defineProps$ = exports.defineEnumProps$ = exports.defineEnumProp$ = exports.defineProp$ = exports.errorIfNotTypeOnTarget$ = exports._targetDescriptorTuple = exports._makeDescriptorEnumerable = exports._descriptorForSettable = undefined;
 
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }(); /**
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           * @module fjlMutable
@@ -22,12 +22,20 @@ var _fjlErrorThrowing = require('fjl-error-throwing');
 function _getDefineProps$(enumerable) {
     var op$ = enumerable ? defineEnumProp$ : defineProp$;
     return function (argTuples, target) {
-        var targetDescriptorTupleArg = [[target]];
+        var targetDescriptorTupleArg = [target];
         return argTuples.map(function (argTuple) {
             var result = void 0;
             switch (argTuple.length) {
                 case 2:
                     result = (0, _fjl.apply)(op$, argTuple.concat(targetDescriptorTupleArg));
+                    break;
+                case 3:
+                    var _argTuple = _slicedToArray(argTuple, 3),
+                        TypeRef = _argTuple[0],
+                        propName = _argTuple[1],
+                        defaultValue = _argTuple[2];
+
+                    result = (0, _fjl.apply)(op$, [TypeRef, propName, target, defaultValue]);
                     break;
                 default:
                     result = (0, _fjl.apply)(op$, argTuple);
@@ -78,6 +86,10 @@ _makeDescriptorEnumerable = exports._makeDescriptorEnumerable = function _makeDe
     descriptor.enumerable = true;
     return [target, descriptor];
 },
+    _targetDescriptorTuple = exports._targetDescriptorTuple = function _targetDescriptorTuple(targetOrTargetDescrTuple) {
+    return (0, _fjl.isType)('Array', targetOrTargetDescrTuple) ? // Strict type check for array
+    targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
+},
 
 
 /**
@@ -98,23 +110,24 @@ errorIfNotTypeOnTarget$ = exports.errorIfNotTypeOnTarget$ = function errorIfNotT
  * @function module:fjlMutable.defineProp$
  * @param Type {TypeRef} - {String|Function}
  * @param propName {String}
- * @param {TargetDescriptorTuple} - [target, descriptor].
+ * @param target {TargetDescriptorTuple} - Target or array of target and descriptor ([target, descriptor]).
  * @param [defaultValue=undefined] {*}
  * @returns {TargetDescriptorTuple}
  */
-defineProp$ = exports.defineProp$ = function defineProp$(Type, propName, _ref3) {
-    var _ref4 = _slicedToArray(_ref3, 2),
-        target = _ref4[0],
-        descriptor = _ref4[1];
-
+defineProp$ = exports.defineProp$ = function defineProp$(Type, propName, target) {
     var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
-    descriptor = descriptor || _descriptorForSettable(Type, propName, target);
-    Object.defineProperty(target, propName, descriptor);
+    var _targetDescriptorTupl = _targetDescriptorTuple(target),
+        _targetDescriptorTupl2 = _slicedToArray(_targetDescriptorTupl, 2),
+        _target = _targetDescriptorTupl2[0],
+        _descriptor = _targetDescriptorTupl2[1],
+        descriptor = _descriptor || _descriptorForSettable(Type, propName, _target);
+
+    Object.defineProperty(_target, propName, descriptor);
     if (!(0, _fjl.isUndefined)(defaultValue)) {
-        target[propName] = defaultValue;
+        _target[propName] = defaultValue;
     }
-    return [target, descriptor];
+    return [_target, descriptor];
 },
 
 
@@ -122,19 +135,20 @@ defineProp$ = exports.defineProp$ = function defineProp$(Type, propName, _ref3) 
  * @function module:fjlMutable.defineProp$
  * @param Type {TypeRef} - {String|Function}
  * @param propName {String}
- * @param {TargetDescriptorTuple} - [target, descriptor].
+ * @param target {TargetDescriptorTuple} - Target or array of target and descriptor ([target, descriptor]).
  * @param [defaultValue=undefined] {*}
  * @returns {TargetDescriptorTuple}
  */
-defineEnumProp$ = exports.defineEnumProp$ = function defineEnumProp$(Type, propName, _ref5) {
-    var _ref6 = _slicedToArray(_ref5, 2),
-        target = _ref6[0],
-        descriptor = _ref6[1];
-
+defineEnumProp$ = exports.defineEnumProp$ = function defineEnumProp$(Type, propName, target) {
     var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
-    descriptor = descriptor || _descriptorForSettable(Type, propName, target);
-    return defineProp$(Type, propName, _makeDescriptorEnumerable([target, descriptor]), defaultValue);
+    var _targetDescriptorTupl3 = _targetDescriptorTuple(target),
+        _targetDescriptorTupl4 = _slicedToArray(_targetDescriptorTupl3, 2),
+        _target = _targetDescriptorTupl4[0],
+        _descriptor = _targetDescriptorTupl4[1],
+        descriptor = _descriptor || _descriptorForSettable(Type, propName, _target);
+
+    return defineProp$(Type, propName, _makeDescriptorEnumerable([_target, descriptor]), defaultValue);
 },
 
 

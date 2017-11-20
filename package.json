@@ -1,6 +1,6 @@
 {
   "name": "fjl-mutable",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "description": "",
   "main": "dist/cjs/fjlMutable.js",
   "module": "es6-module/fjl-mutable.js",

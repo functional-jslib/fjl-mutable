@@ -197,12 +197,20 @@ var slicedToArray = function () {
 function _getDefineProps$(enumerable) {
     var op$ = enumerable ? defineEnumProp$ : defineProp$;
     return function (argTuples, target) {
-        var targetDescriptorTupleArg = [[target]];
+        var targetDescriptorTupleArg = [target];
         return argTuples.map(function (argTuple) {
             var result = void 0;
             switch (argTuple.length) {
                 case 2:
                     result = fjl.apply(op$, argTuple.concat(targetDescriptorTupleArg));
+                    break;
+                case 3:
+                    var _argTuple = slicedToArray(argTuple, 3),
+                        TypeRef = _argTuple[0],
+                        propName = _argTuple[1],
+                        defaultValue = _argTuple[2];
+
+                    result = fjl.apply(op$, [TypeRef, propName, target, defaultValue]);
                     break;
                 default:
                     result = fjl.apply(op$, argTuple);
@@ -235,33 +243,39 @@ var _makeDescriptorEnumerable = function _makeDescriptorEnumerable(_ref) {
     descriptor.enumerable = true;
     return [target, descriptor];
 };
+var _targetDescriptorTuple = function _targetDescriptorTuple(targetOrTargetDescrTuple) {
+    return fjl.isType('Array', targetOrTargetDescrTuple) ? // Strict type check for array
+    targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
+};
 var errorIfNotTypeOnTarget$ = function errorIfNotTypeOnTarget$(Type, propName, target, propValue) {
     fjlErrorThrowing.errorIfNotType(fjlErrorThrowing.getTypeName(Type), target, propName, propValue);
     return propValue;
 };
-var defineProp$ = function defineProp$(Type, propName, _ref3) {
-    var _ref4 = slicedToArray(_ref3, 2),
-        target = _ref4[0],
-        descriptor = _ref4[1];
-
+var defineProp$ = function defineProp$(Type, propName, target) {
     var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
-    descriptor = descriptor || _descriptorForSettable(Type, propName, target);
-    Object.defineProperty(target, propName, descriptor);
+    var _targetDescriptorTupl = _targetDescriptorTuple(target),
+        _targetDescriptorTupl2 = slicedToArray(_targetDescriptorTupl, 2),
+        _target = _targetDescriptorTupl2[0],
+        _descriptor = _targetDescriptorTupl2[1],
+        descriptor = _descriptor || _descriptorForSettable(Type, propName, _target);
+
+    Object.defineProperty(_target, propName, descriptor);
     if (!fjl.isUndefined(defaultValue)) {
-        target[propName] = defaultValue;
+        _target[propName] = defaultValue;
     }
-    return [target, descriptor];
+    return [_target, descriptor];
 };
-var defineEnumProp$ = function defineEnumProp$(Type, propName, _ref5) {
-    var _ref6 = slicedToArray(_ref5, 2),
-        target = _ref6[0],
-        descriptor = _ref6[1];
-
+var defineEnumProp$ = function defineEnumProp$(Type, propName, target) {
     var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
-    descriptor = descriptor || _descriptorForSettable(Type, propName, target);
-    return defineProp$(Type, propName, _makeDescriptorEnumerable([target, descriptor]), defaultValue);
+    var _targetDescriptorTupl3 = _targetDescriptorTuple(target),
+        _targetDescriptorTupl4 = slicedToArray(_targetDescriptorTupl3, 2),
+        _target = _targetDescriptorTupl4[0],
+        _descriptor = _targetDescriptorTupl4[1],
+        descriptor = _descriptor || _descriptorForSettable(Type, propName, _target);
+
+    return defineProp$(Type, propName, _makeDescriptorEnumerable([_target, descriptor]), defaultValue);
 };
 var defineEnumProps$ = _getDefineProps$(true);
 var defineProps$ = _getDefineProps$(false);
@@ -320,6 +334,7 @@ var defineEnumPropString = defineEnumProp(String);
 
 exports._descriptorForSettable = _descriptorForSettable;
 exports._makeDescriptorEnumerable = _makeDescriptorEnumerable;
+exports._targetDescriptorTuple = _targetDescriptorTuple;
 exports.errorIfNotTypeOnTarget$ = errorIfNotTypeOnTarget$;
 exports.defineProp$ = defineProp$;
 exports.defineEnumProp$ = defineEnumProp$;

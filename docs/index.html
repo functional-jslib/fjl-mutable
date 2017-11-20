@@ -43,10 +43,159 @@
 
 
     <section>
-        <article><h1>fjl-mutable (Beta)</h1><p>Helpers for setting mutable strictly typed properties on objects.</p>
-<h2>Docs</h2><p>JsDocs here:</p>
-<p>https://functional-jslib.github.io/fjl-mutable/module-fjlMutable.html</p>
-<h2>License</h2></article>
+        <article><h1>fjl-mutable</h1><p>Helpers for setting mutable strictly typed properties on objects.</p>
+<h2>Docs</h2><p>JsDocs here: https://functional-jslib.github.io/fjl-mutable/module-fjlMutable.html</p>
+<h2>Stars of the show:</h2><p><code>defineEnumProp</code> and <code>defineEnumProps</code> and their variants (<code>defineEnumProp$</code> and <code>defineEnumProps$</code>).</p>
+<p><strong>Note:</strong> All functions detailed below are curried and have uncurried variants (
+    function name(s) with trailing <code>$</code> character: E.g., <code>defineEnumProp$...</code> ).</p>
+<h2>Virtual Types</h2><p>In order to more precisely and easily write 'readme' docs here 
+I've defined some virtual types to better understand and more concisely 
+write the docs.  Virtual types proceed:</p>
+<ul>
+<li><code>TypeRef</code> {String|Function} - String name of constructor or constructor itself.</li>
+<li><code>Descriptor</code> {Object} - Prop descriptor.  We generate descriptors of the form
+  <code>{Object&lt;get, set, [enumerable]}</code> when they are not passed in. </li>
+<li><code>Target</code> {*} - Target to define property on.</li>
+<li><code>TargetOrTargetTuple</code> {*|Array<Target, Descriptor>} - A target to operate on or target and descriptor to operate on.</li>
+</ul>
+<h2>Exports</h2><h3><code>defineProp(TypeRef, propName, targetOrTargetTuple, defaultValue = undefined) : Descriptor</code></h3><p>Defines a property on target that is constricted to given Type (<code>TypeRef</code>).
+HaskellType: <code>defineProp :: TypeRef -&gt; String -&gt; TargetOrTargetTuple -&gt; Any -&gt; Descriptor</code></p>
+<h3><code>defineEnumProp(TypeRef, propName, targetOrTargetTuple, defaultValue = undefined) : Descriptor</code></h3><p>Defines an enumerable property on target that is constricted to given Type (<code>TypeRef</code>).
+HaskellType: <code>defineEnumProp :: TypeRef -&gt; String -&gt; TargetOrTargetTuple -&gt; Any -&gt; Descriptor</code></p>
+<pre class="prettyprint source"><code>const someDefaultValue = 
+class User {
+    static defaultRole = 'guest';
+    constructor ({firstName, age}) {
+        defineEnumProp(String, 'firstName', this, firstName); // if `firstName` here is not of type `String`, detailed error thrown  
+        defineEnumProp(Number, 'age', this);
+        defineEnumProp(String, 'role', this, User.defaultRole);
+        this.age = age; // This is fine since our setter expects a number
+        this.age = 'hello world'; // This throws a detailed error ('`#User.age` 
+                                  //   ... expects type: &quot;Number&quot; ... Type received ...' etc.
+                                  // )
+    }
+}
+
+// Later..
+const user = new User();
+user.firstName = &quot;Some name&quot;;
+user.age = '99'; // Throws (detailed) error since type does not match.</code></pre><h3><code>defineEnumProps(argTuples, target) : Array&lt;Array&lt;Target, Descriptor&gt;&gt;</code></h3><p>Defines enumerable properties all at once on specified target.</p>
+<h4>Params:</h4><ul>
+<li><code>argTuples {Array}</code> - Array of argument lists of the same type that <code>defineEnumProps</code> takes: 
+  E.g., <code>Array.&lt;TypeRef, String, TargetOrTargetTuple, Any&gt;</code>  with one distinction: 3rd argument is optional (target argument).
+```
+const someTarget = {};
+defineEnumProps([
+  [String, 'someProp', someDefaultValue],
+  [String, 'someProp2', someDefaultValue2],
+  [String, 'someProp3', someTarget, someDefaultValue3],
+  [String, 'someProp4', [someTarget, somePropDescriptor], someDefaultValue4],
+], someTarget);</li>
+</ul>
+<pre class="prettyprint source"><code>- `target {*}` - Target to define properties on.  
+
+Example usage:</code></pre><p>const someDefaultValue = 'someValueHere';
+class User {
+    static defaultRole = 'guest';
+    constructor ({firstName, age}) {
+        defineEnumProps([
+            [String, 'firstName', firstName],   // if <code>firstName</code> here is not of 
+                                                // type <code>String</code>, detailed error thrown
+            [Number, 'age'],
+            [String, 'role', User.defaultRole]
+        ], target);
+        this.age = age;                         // This is fine since our setter expects a number
+        this.age = 'hello world';               // This throws a detailed error ('<code>#User.age</code> 
+                                                //   ... expects type: &quot;Number&quot; ... Type received ...' etc.
+                                                // )
+    }
+}</p>
+<p>// Later..
+const user = new User();
+user.firstName = &quot;Some name&quot;;
+user.age = '99'; // Throws (detailed) error since type does not match.</p>
+<pre class="prettyprint source"><code>
+### `defineProps(argTuples, target) : Array&lt;Array&lt;Target, Descriptor>>`
+Same as `defineEnumProps` though doesn't make props enumerable on target.  See params description and examples below:
+#### Params:
+- `argTuples {Array}` - Array of argument lists of the same type that `defineEnumProps` takes: 
+    E.g., `Array.&lt;TypeRef, String, TargetOrTargetTuple, Any>`  with one distinction: 3rd argument is optional (target argument).</code></pre><p>const someTarget = {};
+defineEnumProps([
+    [String, 'someProp', someDefaultValue],
+    [String, 'someProp2', someDefaultValue2],
+    [String, 'someProp3', someTarget, someDefaultValue3],
+    [String, 'someProp4', [someTarget, somePropDescriptor], someDefaultValue4],
+], someTarget);</p>
+<pre class="prettyprint source"><code>- `target {*}` - Target to define properties on.  
+
+Example usage:</code></pre><p>const someDefaultValue = 'someValueHere';
+class User {
+    static defaultRole = 'guest';
+    constructor ({firstName, age}) {
+        defineProps([
+            [String, 'firstName', firstName],   // if <code>firstName</code> here is not of 
+                                                // type <code>String</code>, detailed error thrown
+            [Number, 'age'],
+            [String, 'role', User.defaultRole]
+        ], target);
+        this.age = age;                         // This is fine since our setter expects a number
+        this.age = 'hello world';               // This throws a detailed error ('<code>#User.age</code> 
+                                                //   ... expects type: &quot;Number&quot; ... Type received ...' etc.
+                                                // )
+    }
+}</p>
+<p>// Later..
+const user = new User();
+user.firstName = &quot;Some name&quot;;
+user.age = '99'; // Throws (detailed) error since type does not match.</p>
+<pre class="prettyprint source"><code>
+### `definePropArray(propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
+Sets a property on target and enforces `Array` type (error if not `Array` type).
+- `propName {String}`
+- `targetOrTargetTuple {*|Array&lt;Target, PropDescriptor>}`
+Example:</code></pre><pre class="prettyprint source"><code>const target = {},
+    defaultList = [1, 2, 3],
+    defaultListCopy = defaultListCopy.slice(0);
+definePropArray('someListProp', target, defaultListCopy);
+// Later..
+target.someListProp === defaultListCopy; // true
+target.someListProp = []; // Matches type, is ok
+target.someListProp = 99; // Detailed error thrown, types don't match</code></pre><pre class="prettyprint source"><code>### `definePropFunction (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
+Same as `definePropArray` but enforces `Function`.
+
+### `definePropNumber (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
+Same as `definePropArray` but enforces `Number`.
+
+### `definePropBoolean (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
+Same as `definePropArray` but enforces `Boolean`.
+
+### `definePropString (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
+Same as `definePropArray` but enforces `String`.
+
+### `defineEnumPropArray(propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
+Sets an enumerable property on target and enforces the `Array` type on it (error if not `Array` type etc.).
+- `propName {String}`
+- `targetOrTargetTuple {*|Array&lt;Target, PropDescriptor>}`
+Example:</code></pre><pre class="prettyprint source"><code>const target = {},
+    defaultList = [1, 2, 3],
+    defaultListCopy = defaultListCopy.slice(0);
+defineEnumPropArray('someListProp', target, defaultListCopy);
+// Later..
+target.someListProp === defaultListCopy; // true
+target.someListProp = []; // Matches type, is ok
+target.someListProp = 99; // Detailed error thrown, types don't match</code></pre><p>```</p>
+<h3><code>defineEnumPropFunction (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple</code></h3><p>Same as <code>defineEnumPropArray</code> but enforces <code>Function</code>.</p>
+<h3><code>defineEnumPropNumber (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple</code></h3><p>Same as <code>defineEnumPropArray</code> but enforces <code>Number</code>.</p>
+<h3><code>defineEnumPropBoolean (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple</code></h3><p>Same as <code>defineEnumPropArray</code> but enforces <code>Boolean</code>.</p>
+<h3><code>defineEnumPropString (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple</code></h3><p>Same as <code>defineEnumPropArray</code> but enforces <code>String</code>.</p>
+<h3>Development</h3><ol>
+<li><code>npm install</code></li>
+<li>Look at node scripts in package.json.</li>
+</ol>
+<h3>Testing</h3><ol>
+<li><code>npm test</code> (after <code>npm install</code>).</li>
+</ol>
+<h2>License</h2><p>MIT</p></article>
     </section>
 
 
@@ -63,7 +212,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sun Nov 19 2017 13:09:16 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon Nov 20 2017 13:22:31 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>
