@@ -17,7 +17,7 @@ describe ('#fjlMutable', function () {
 
     describe ('#_descriptorForSettable', function () {
         const someTarget = {},
-            exampleNumberDescriptor = _descriptorForSettable(Number, 'someNum', someTarget),
+            exampleNumberDescriptor = _descriptorForSettable(Number, someTarget, 'someNum'),
             result = exampleNumberDescriptor;
         it ('should return a descriptor with a setter and a getter', function () {
             const keys = Object.keys(result);
@@ -78,7 +78,7 @@ describe ('#fjlMutable', function () {
     describe ('#defineProp$', function () {
         const someTarget = {},
             propName = 'someNum',
-            [target, descriptor] = defineProp$(Number, propName, [someTarget]);
+            [target, descriptor] = defineProp$(Number, [someTarget], propName);
         it ('should return a `target` and `descriptor` pair (tuple)', function () {
             expect(target).to.equal(someTarget);
             expect(!!descriptor).to.equal(true);
@@ -102,7 +102,7 @@ describe ('#fjlMutable', function () {
                     value: someValue,
                     enumerable: true
                 },
-                [target2, descriptor2] = defineProp$(Number, somePropName, [someTarget, customDescriptor]);
+                [target2, descriptor2] = defineProp$(Number, [someTarget, customDescriptor], somePropName);
             assert.throws(() => target2[somePropName] = 99, Error);
             expect(target2[somePropName]).to.equal(someValue);
             expect(descriptor2).to.equal(customDescriptor);
@@ -113,7 +113,7 @@ describe ('#fjlMutable', function () {
     describe ('#defineEnumProp$', function () {
         const someTarget = {},
             propName = 'someNum',
-            [target, descriptor] = defineEnumProp$(Number, propName, [someTarget]);
+            [target, descriptor] = defineEnumProp$(Number, [someTarget], propName);
         it ('should return a `target` and `descriptor` pair (tuple)', function () {
             expect(target).to.equal(someTarget);
             expect(!!descriptor).to.equal(true);
@@ -141,7 +141,7 @@ describe ('#fjlMutable', function () {
                     value: someValue,
                     enumerable: false
                 },
-                [target2, descriptor2] = defineEnumProp$(Number, somePropName, [someTarget, customDescriptor]);
+                [target2, descriptor2] = defineEnumProp$(Number, [someTarget, customDescriptor], somePropName);
             assert.throws(() => target2[somePropName] = 99, Error);
             expect(target2[somePropName]).to.equal(someValue);
             expect(descriptor2).to.equal(customDescriptor);
@@ -249,17 +249,17 @@ describe ('#fjlMutable', function () {
             });
         });
 
-        it ('should be able to set types with argTuples of length of `3` ' +
-            '([target, descriptor] tuple) and `4` (defaultValue)', function () {
+        it ('should be able to set types with argTuples of length of `3` (containing a `defaultValue`)', function () {
             generateTargetData().map(argTuple => {
                 const [args, target] = argTuple;
                 // log(argTuple);
-                // Return new version of `argTuple` (seeded with `[target]` and `defaultValue`)
+                // Return new version of `argTuple` (seeded with `defaultValue`)
                 return [
-                    // Add `[target]` and `defaultValue` to arg lists
+                    // Add `defaultValue` to arg lists
                     args.map((argSet, ind) => {
-                        const [correct, _] = seedArgTuple_correctIncorrectValues[ind];
-                        return argSet.concat([[target], correct])
+                        const [TypeRef, propName] = argSet,
+                            [correct, _] = seedArgTuple_correctIncorrectValues[ind];
+                        return [TypeRef, propName, correct];
                     }),
                     target
                 ];
@@ -389,12 +389,12 @@ describe ('#fjlMutable', function () {
             generateTargetData().map(argTuple => {
                 const [args, target] = argTuple;
                 // log(argTuple);
-                // Return new version of `argTuple` (seeded with `[target]` and `defaultValue`)
+                // Return new version of `argTuple` seeded `defaultValue`
                 return [
-                    // Add `[target]` and `defaultValue` to arg lists
+                    // Add `defaultValue` to arg lists
                     args.map((argSet, ind) => {
                         const [correct, _] = seedArgTuple_correctIncorrectValues[ind];
-                        return argSet.concat([[target], correct])
+                        return argSet.concat([correct]);
                     }),
                     target
                 ];

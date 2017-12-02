@@ -10,21 +10,14 @@ import { errorIfNotType, getTypeName } from 'fjl-error-throwing';
  * @private
  */
 function _getDefineProps$ (enumerable) {
-    const op$ = enumerable ? defineEnumProp$ : defineProp$;
+    const operation$ = enumerable ? defineEnumProp$ : defineProp$;
     return (argTuples, target) => {
-        const targetDescriptorTupleArg = [target];
         return argTuples.map(argTuple => {
             let result;
             switch (argTuple.length) {
-                case 2:
-                    result = apply(op$, argTuple.concat(targetDescriptorTupleArg));
-                    break;
-                case 3:
-                    const [TypeRef, propName, defaultValue] = argTuple;
-                    result = apply(op$, [TypeRef, propName, target, defaultValue]);
-                    break;
                 default:
-                    result = apply(op$, argTuple);
+                    const [TypeRef, propName, defaultValue] = argTuple;
+                    result = apply(operation$, [TypeRef, target, propName, defaultValue]);
                     break;
             }
             return result;
@@ -35,7 +28,7 @@ function _getDefineProps$ (enumerable) {
 /**
  * @note Custom jsdoc type definitions defined toward end of file.
  */
-const _descriptorForSettable = (Type, propName, target) => {
+const _descriptorForSettable = (Type, target, propName) => {
         let _value;
         return {
             get: function () {
@@ -53,25 +46,26 @@ const _makeDescriptorEnumerable = ([target, descriptor]) => {
 const _targetDescriptorTuple = targetOrTargetDescrTuple =>
         isType('Array', targetOrTargetDescrTuple) ? // Strict type check for array
             targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
-const errorIfNotTypeOnTarget$ = (Type, propName, target, propValue) => {
+const errorIfNotTypeOnTarget$ = (Type, target, propName, propValue) => {
         errorIfNotType(getTypeName(Type), target, propName, propValue);
         return propValue;
     };
-const defineProp$ = (Type, propName, target, defaultValue = undefined) => {
+const defineProp$ = (Type, target, propName, defaultValue = undefined) => {
         const [_target, _descriptor] = _targetDescriptorTuple(target),
-            descriptor = _descriptor || _descriptorForSettable(Type, propName, _target);
+            descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
         Object.defineProperty(_target, propName, descriptor);
         if (!isUndefined(defaultValue)) {
             _target[propName] = defaultValue;
         }
         return [_target, descriptor];
     };
-const defineEnumProp$ = (Type, propName, target, defaultValue = undefined) => {
+const defineEnumProp$ = (Type, target, propName, defaultValue = undefined) => {
         const [_target, _descriptor] = _targetDescriptorTuple(target),
-            descriptor = _descriptor || _descriptorForSettable(Type, propName, _target);
+            descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
         return defineProp$(
-            Type, propName,
+            Type,
             _makeDescriptorEnumerable([_target, descriptor]),
+            propName,
             defaultValue
         );
     };
@@ -82,16 +76,6 @@ const defineProp = curry(defineProp$);
 const defineEnumProp = curry(defineEnumProp$);
 const defineProps = curry(defineProps$);
 const defineEnumProps = curry(defineEnumProps$);
-const definePropArray = defineProp(Array);
-const definePropBoolean = defineProp(Boolean);
-const definePropFunction = defineProp(Function);
-const definePropNumber = defineProp(Number);
-const definePropString = defineProp(String);
-const defineEnumPropArray = defineEnumProp(Array);
-const defineEnumPropBoolean = defineEnumProp(Boolean);
-const defineEnumPropFunction = defineEnumProp(Function);
-const defineEnumPropNumber = defineEnumProp(Number);
-const defineEnumPropString = defineEnumProp(String);
 
 /** ============================================================= */
 /** Type definitions:                                             */
@@ -114,11 +98,11 @@ const defineEnumPropString = defineEnumProp(String);
  */
 
 /**
- * @typedef {Array.<TypeRef, String, TargetDescriptorTuple, *>}  DefinePropArgsTuple
+ * @typedef {Array.<TypeRef, TargetDescriptorTuple, String, *>}  DefinePropArgsTuple
  * @description Arguments list for `defineProp` and/or `defineEnumProp` (note: some
  *  parts of array/tuple are options (namely the last two args));  E.g.,
  *  ```
- *  [String, 'somePropName', [someTarget], 'someDefaultValue] // ...
+ *  [String, [someTarget], 'somePropName', 'someDefaultValue] // ...
  *  ```
  */
 
@@ -130,4 +114,4 @@ const defineEnumPropString = defineEnumProp(String);
  * @returns {Array.<TargetDescriptorTuple>}
  */
 
-export { _descriptorForSettable, _makeDescriptorEnumerable, _targetDescriptorTuple, errorIfNotTypeOnTarget$, defineProp$, defineEnumProp$, defineEnumProps$, defineProps$, errorIfNotTypeOnTarget, defineProp, defineEnumProp, defineProps, defineEnumProps, definePropArray, definePropBoolean, definePropFunction, definePropNumber, definePropString, defineEnumPropArray, defineEnumPropBoolean, defineEnumPropFunction, defineEnumPropNumber, defineEnumPropString };
+export { _descriptorForSettable, _makeDescriptorEnumerable, _targetDescriptorTuple, errorIfNotTypeOnTarget$, defineProp$, defineEnumProp$, defineEnumProps$, defineProps$, errorIfNotTypeOnTarget, defineProp, defineEnumProp, defineProps, defineEnumProps };
