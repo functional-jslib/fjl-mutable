@@ -12,16 +12,11 @@ import { errorIfNotType, getTypeName } from 'fjl-error-throwing';
 function _getDefineProps$ (enumerable) {
     const operation$ = enumerable ? defineEnumProp$ : defineProp$;
     return (argTuples, target) => {
-        return argTuples.map(argTuple => {
-            let result;
-            switch (argTuple.length) {
-                default:
-                    const [TypeRef, propName, defaultValue] = argTuple;
-                    result = apply(operation$, [TypeRef, target, propName, defaultValue]);
-                    break;
-            }
-            return result;
+        argTuples.forEach(argTuple => {
+            const [TypeRef, propName, defaultValue] = argTuple;
+            apply(operation$, [TypeRef, target, propName, defaultValue]);
         });
+        return target;
     };
 }
 

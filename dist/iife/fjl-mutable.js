@@ -197,20 +197,15 @@ var slicedToArray = function () {
 function _getDefineProps$(enumerable) {
     var operation$ = enumerable ? defineEnumProp$ : defineProp$;
     return function (argTuples, target) {
-        return argTuples.map(function (argTuple) {
-            var result = void 0;
-            switch (argTuple.length) {
-                default:
-                    var _argTuple = slicedToArray(argTuple, 3),
-                        TypeRef = _argTuple[0],
-                        propName = _argTuple[1],
-                        defaultValue = _argTuple[2];
+        argTuples.forEach(function (argTuple) {
+            var _argTuple = slicedToArray(argTuple, 3),
+                TypeRef = _argTuple[0],
+                propName = _argTuple[1],
+                defaultValue = _argTuple[2];
 
-                    result = fjl.apply(operation$, [TypeRef, target, propName, defaultValue]);
-                    break;
-            }
-            return result;
+            fjl.apply(operation$, [TypeRef, target, propName, defaultValue]);
         });
+        return target;
     };
 }
 

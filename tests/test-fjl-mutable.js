@@ -1,5 +1,5 @@
 import {assert, expect} from 'chai';
-import {unfoldr, keys, isFunction} from 'fjl';
+import {unfoldr, keys, isFunction, apply} from 'fjl';
 import {
     _descriptorForSettable,
     _makeDescriptorEnumerable,
@@ -197,8 +197,7 @@ describe ('#fjlMutable', function () {
         it ('should be able to define many props on given target with only argTuples of length `2`', function () {
             generateTargetData().forEach(args => {
                 // log(args);
-                const result = defineProps$.apply(null, args),
-                    [target] = result[0],
+                const target = defineProps$.apply(null, args),
                     propNames = args[0].map(x => x[1]);
 
                 // log(propNames, '\n', target);
@@ -214,8 +213,7 @@ describe ('#fjlMutable', function () {
             'and no errors when set to the correct type', function () {
             generateTargetData().forEach(args => {
                 // log(args);
-                const result = defineProps$.apply(null, args),
-                    [target] = result[0],
+                const target = defineProps$.apply(null, args),
                     propNames = args[0].map(x => x[1]);
 
                 // log(propNames, '\n', target);
@@ -236,15 +234,15 @@ describe ('#fjlMutable', function () {
             });
         });
 
-        it ('should return target and descriptor tuples from operation', function () {
+        it ('should return target with defined properties from operation', function () {
             generateTargetData().forEach(args => {
                 // log(args);
-                const
-                    result = defineProps$.apply(null, args);
-                expect(result.length).to.equal(args[0].length);
-                result.forEach(([t, d]) => {
-                    expect(t).to.be.instanceOf(Object);
-                    expect(['set', 'get'].every(key => d[key] instanceof Function));
+                const target = apply(defineProps$, args),
+                    argKeyNames = args[0].map(pair => pair[1]);
+                expect(target).to.be.instanceOf(Object);
+                argKeyNames.forEach(key => {
+                    const propDescriptor = Object.getOwnPropertyDescriptor(target, key);
+                    expect(['set', 'get'].every(key => propDescriptor[key] instanceof Function));
                 });
             });
         });
@@ -265,12 +263,12 @@ describe ('#fjlMutable', function () {
                 ];
             }).forEach(args => {
                 // log(args);
-                const
-                    result = defineProps$.apply(null, args);
-                expect(result.length).to.equal(args[0].length);
-                result.forEach(([t, d]) => {
-                    expect(t).to.be.instanceOf(Object);
-                    expect(['set', 'get'].every(key => d[key] instanceof Function));
+                const target = apply(defineProps$, args),
+                    argKeyNames = args[0].map(([_, key]) => key);
+                expect(target).to.be.instanceOf(Object);
+                argKeyNames.forEach(key => {
+                    const propDescriptor = Object.getOwnPropertyDescriptor(target, key);
+                    expect(['set', 'get'].every(key => propDescriptor[key] instanceof Function));
                 });
             });
         });
@@ -325,9 +323,8 @@ describe ('#fjlMutable', function () {
         it ('should be able to define many enum props on given target with only argTuples of length `2`', function () {
             generateTargetData().forEach(args => {
                 // log(args);
-                const result = defineEnumProps$.apply(null, args),
-                    [target] = result[0],
-                    propNames = args[0].map(x => x[1]);
+                const target = apply(defineEnumProps$, args),
+                    propNames = args[0].map(([_, name]) => name);
 
                 // log(propNames, '\n', target);
 
@@ -344,9 +341,8 @@ describe ('#fjlMutable', function () {
             'and no errors when set to the correct type', function () {
             generateTargetData().forEach(args => {
                 // log(args);
-                const result = defineEnumProps$.apply(null, args),
-                    [target] = result[0],
-                    propNames = args[0].map(x => x[1]);
+                const target = apply(defineEnumProps$, args),
+                    propNames = args[0].map(([_, name]) => name);
 
                 // log(propNames, '\n', target);
 
@@ -373,13 +369,13 @@ describe ('#fjlMutable', function () {
         it ('should return target and descriptor tuples from operation', function () {
             generateTargetData().forEach(args => {
                 // log(args);
-                const
-                    result = defineEnumProps$.apply(null, args);
-                expect(result.length).to.equal(args[0].length);
-                result.forEach(([t, d]) => {
-                    expect(t).to.be.instanceOf(Object);
-                    expect(d.enumerable).to.equal(true);
-                    expect(['set', 'get'].every(key => d[key] instanceof Function));
+                const target = apply(defineEnumProps$, args),
+                    propNames = args[0].map(([_, name]) => name);
+                expect(target).to.be.instanceOf(Object);
+                propNames.forEach(name => {
+                    const propDescript = Object.getOwnPropertyDescriptor(target, name);
+                    expect(propDescript.enumerable).to.equal(true);
+                    expect(['set', 'get'].every(key => propDescript[key] instanceof Function));
                 });
             });
         });
@@ -402,10 +398,9 @@ describe ('#fjlMutable', function () {
             }).forEach(args => {
                 // log(args);
 
-                // Call test subject
-                const result = defineEnumProps$.apply(null, args),
-                    [target] = result[0],
-                    propNames = args[0].map(x => x[1]);
+                const target = apply(defineEnumProps$, args),
+                    propNames = args[0].map(([_, name]) => name);
+                expect(target).to.be.instanceOf(Object);
 
                 // log(propNames, '\n', target);
 

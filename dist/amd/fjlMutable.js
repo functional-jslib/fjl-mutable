@@ -18,16 +18,11 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
     function _getDefineProps$(enumerable) {
         const operation$ = enumerable ? defineEnumProp$ : defineProp$;
         return (argTuples, target) => {
-            return argTuples.map(argTuple => {
-                let result;
-                switch (argTuple.length) {
-                    default:
-                        const [TypeRef, propName, defaultValue] = argTuple;
-                        result = (0, _fjl.apply)(operation$, [TypeRef, target, propName, defaultValue]);
-                        break;
-                }
-                return result;
+            argTuples.forEach(argTuple => {
+                const [TypeRef, propName, defaultValue] = argTuple;
+                (0, _fjl.apply)(operation$, [TypeRef, target, propName, defaultValue]);
             });
+            return target;
         };
     }
 

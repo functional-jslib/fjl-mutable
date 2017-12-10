@@ -1,6 +1,6 @@
 {
   "name": "fjl-mutable",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "",
   "main": "dist/cjs/fjlMutable.js",
   "module": "es6-module/fjl-mutable.js",
@@ -23,8 +23,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fjl": "^0.17.10",
-    "fjl-error-throwing": "^0.7.4"
+    "fjl": "^0.17.14",
+    "fjl-error-throwing": "^0.7.5"
   },
   "devDependencies": {
     "babel-plugin-add-module-exports": "^0.2.1",
@@ -35,7 +35,7 @@
     "chai": "^4.1.2",
     "chalk": "^2.1.0",
     "del": "^3.0.0",
-    "fjl-chai-helpers": "^0.10.0",
+    "fjl-chai-helpers": "^0.10.5",
     "gulp": "^3.9.1",
     "gulp-babel": "^7.0.0",
     "gulp-better-rollup": "^1.1.1",
