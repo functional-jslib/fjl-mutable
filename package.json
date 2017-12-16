@@ -1,9 +1,9 @@
 {
   "name": "fjl-mutable",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "",
   "main": "dist/cjs/fjlMutable.js",
-  "module": "es6-module/fjl-mutable.js",
+  "module": "dist/es6-module/fjl-mutable.js",
   "scripts": {
     "build": "gulp clean && gulp build && npm run test-builds",
     "build-docs": "gulp jsdoc",
