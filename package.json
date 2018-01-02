@@ -1,10 +1,11 @@
 {
   "name": "fjl-mutable",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "",
   "main": "dist/cjs/fjlMutable.js",
   "module": "dist/es6-module/fjl-mutable.js",
   "scripts": {
+    "pre-publish": "npm test && npm run build && npm run build-docs",
     "build": "gulp clean && gulp build && npm run test-builds",
     "build-docs": "gulp jsdoc",
     "test-builds": "mocha tests/**/*-test-*.js --plugins babel-plugin-add-module-exports --require babel-register",
@@ -21,7 +22,7 @@
     "property"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "BSD",
   "dependencies": {
     "fjl": "^0.17.14",
     "fjl-error-throwing": "^0.7.5"

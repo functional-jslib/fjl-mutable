@@ -195,75 +195,75 @@ var slicedToArray = function () {
  * @private
  */
 function _getDefineProps$(enumerable) {
-  var operation$ = enumerable ? defineEnumProp$ : defineProp$;
-  return function (argTuples, target) {
-    argTuples.forEach(function (argTuple) {
-      var _argTuple = slicedToArray(argTuple, 3),
-          TypeRef = _argTuple[0],
-          propName = _argTuple[1],
-          defaultValue = _argTuple[2];
+    var operation$ = enumerable ? defineEnumProp$ : defineProp$;
+    return function (argTuples, target) {
+        argTuples.forEach(function (argTuple) {
+            var _argTuple = slicedToArray(argTuple, 3),
+                TypeRef = _argTuple[0],
+                propName = _argTuple[1],
+                defaultValue = _argTuple[2];
 
-      fjl.apply(operation$, [TypeRef, target, propName, defaultValue]);
-    });
-    return target;
-  };
+            fjl.apply(operation$, [TypeRef, target, propName, defaultValue]);
+        });
+        return target;
+    };
 }
 
 /**
  * @note Custom jsdoc type definitions defined toward end of file.
  */
 var _descriptorForSettable = function _descriptorForSettable(Type, target, propName) {
-  var _value = void 0;
-  return {
-    get: function get$$1() {
-      return _value;
-    },
-    set: function set$$1(value) {
-      _value = errorIfNotTypeOnTarget(Type, propName, target, value);
-    }
-  };
+    var _value = void 0;
+    return {
+        get: function get$$1() {
+            return _value;
+        },
+        set: function set$$1(value) {
+            _value = errorIfNotTypeOnTarget(Type, propName, target, value);
+        }
+    };
 };
 var _makeDescriptorEnumerable = function _makeDescriptorEnumerable(_ref) {
-  var _ref2 = slicedToArray(_ref, 2),
-      target = _ref2[0],
-      descriptor = _ref2[1];
+    var _ref2 = slicedToArray(_ref, 2),
+        target = _ref2[0],
+        descriptor = _ref2[1];
 
-  descriptor.enumerable = true;
-  return [target, descriptor];
+    descriptor.enumerable = true;
+    return [target, descriptor];
 };
 var _targetDescriptorTuple = function _targetDescriptorTuple(targetOrTargetDescrTuple) {
-  return fjl.isType('Array', targetOrTargetDescrTuple) ? // Strict type check for array
-  targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
+    return fjl.isType('Array', targetOrTargetDescrTuple) ? // Strict type check for array
+    targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
 };
 var errorIfNotTypeOnTarget$ = function errorIfNotTypeOnTarget$(Type, target, propName, propValue) {
-  fjlErrorThrowing.errorIfNotType(fjlErrorThrowing.getTypeName(Type), target, propName, propValue);
-  return propValue;
+    fjlErrorThrowing.errorIfNotType(fjlErrorThrowing.getTypeName(Type), target, propName, propValue);
+    return propValue;
 };
 var defineProp$ = function defineProp$(Type, target, propName) {
-  var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
+    var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
-  var _targetDescriptorTupl = _targetDescriptorTuple(target),
-      _targetDescriptorTupl2 = slicedToArray(_targetDescriptorTupl, 2),
-      _target = _targetDescriptorTupl2[0],
-      _descriptor = _targetDescriptorTupl2[1],
-      descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
+    var _targetDescriptorTupl = _targetDescriptorTuple(target),
+        _targetDescriptorTupl2 = slicedToArray(_targetDescriptorTupl, 2),
+        _target = _targetDescriptorTupl2[0],
+        _descriptor = _targetDescriptorTupl2[1],
+        descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
 
-  Object.defineProperty(_target, propName, descriptor);
-  if (!fjl.isUndefined(defaultValue)) {
-    _target[propName] = defaultValue;
-  }
-  return [_target, descriptor];
+    Object.defineProperty(_target, propName, descriptor);
+    if (!fjl.isUndefined(defaultValue)) {
+        _target[propName] = defaultValue;
+    }
+    return [_target, descriptor];
 };
 var defineEnumProp$ = function defineEnumProp$(Type, target, propName) {
-  var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
+    var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
-  var _targetDescriptorTupl3 = _targetDescriptorTuple(target),
-      _targetDescriptorTupl4 = slicedToArray(_targetDescriptorTupl3, 2),
-      _target = _targetDescriptorTupl4[0],
-      _descriptor = _targetDescriptorTupl4[1],
-      descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
+    var _targetDescriptorTupl3 = _targetDescriptorTuple(target),
+        _targetDescriptorTupl4 = slicedToArray(_targetDescriptorTupl3, 2),
+        _target = _targetDescriptorTupl4[0],
+        _descriptor = _targetDescriptorTupl4[1],
+        descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
 
-  return defineProp$(Type, _makeDescriptorEnumerable([_target, descriptor]), propName, defaultValue);
+    return defineProp$(Type, _makeDescriptorEnumerable([_target, descriptor]), propName, defaultValue);
 };
 var defineEnumProps$ = _getDefineProps$(true);
 var defineProps$ = _getDefineProps$(false);
