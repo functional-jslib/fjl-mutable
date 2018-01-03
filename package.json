@@ -1,6 +1,6 @@
 {
   "name": "fjl-mutable",
-  "version": "0.16.3",
+  "version": "0.16.4",
   "description": "",
   "main": "dist/cjs/fjlMutable.js",
   "module": "dist/es6-module/fjl-mutable.js",
@@ -24,8 +24,8 @@
   "author": "",
   "license": "BSD",
   "dependencies": {
-    "fjl": "^0.17.14",
-    "fjl-error-throwing": "^0.7.5"
+    "fjl": "0.19.0",
+    "fjl-error-throwing": "^0.7.6"
   },
   "devDependencies": {
     "babel-plugin-add-module-exports": "^0.2.1",
