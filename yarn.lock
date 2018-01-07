@@ -1395,7 +1395,7 @@ fjl-chai-helpers@^0.10.5:
     chai "^4.1.2"
     fjl "^0.17.10"
 
-fjl-error-throwing@^0.7.5:
+fjl-error-throwing@^0.7.7:
   version "0.7.7"
   resolved "https://registry.yarnpkg.com/fjl-error-throwing/-/fjl-error-throwing-0.7.7.tgz#18e1dceb047f52016879e5ac7646fa08e7dc6ee1"
   dependencies:
