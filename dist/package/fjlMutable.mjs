@@ -4,6 +4,11 @@ import { errorIfNotType, getTypeName } from 'fjl-error-throwing';
 /**
  * @module fjlMutable
  */
+/**
+ * @param enumerable {Boolean}
+ * @returns {function(*, *)|PropsDefinerCall}
+ * @private
+ */
 function _getDefineProps$ (enumerable) {
     const operation$ = enumerable ? defineEnumProp$ : defineProp$;
     return (argTuples, target) => {

@@ -187,7 +187,17 @@ gulp.task('uglify', ['iife'], () => {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('build-js', ['version', 'uglify', 'cjs', 'amd', 'umd', 'es6-module']);
+gulp.task('build-js-for-package', () => {
+    return gulp.src('./src/fjlMutable.js')
+        .pipe(gulpRollup(null, {moduleName: iifeModuleName, format: 'es'}))
+        .pipe(concat(buildPath(`package/${iifeModuleName}.mjs`)))
+        .pipe(gulp.dest('./'))
+        .pipe(gulpBabel(gulpConfig.buildCjsOptions.babel))
+        .pipe(concat(buildPath(`package/${iifeModuleName}.js`)))
+        .pipe(gulp.dest('./'));
+});
+
+gulp.task('build-js', ['version', 'uglify', 'cjs', 'amd', 'umd', 'es6-module', 'build-js-for-package']);
 
 gulp.task('jsdoc', () =>
     deleteFilePaths(['./docs/**/*'])
