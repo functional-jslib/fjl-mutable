@@ -1,10 +1,11 @@
 {
   "name": "fjl-mutable",
-  "version": "0.17.0",
+  "version": "0.17.1",
   "description": "Typed mutable properties made easy(ier).",
   "main": "dist/package/fjlMutable",
   "module": "dist/package/fjlMutable.mjs",
   "scripts": {
+    "pre-publish": "npm test build test-builds",
     "build": "gulp clean && gulp build && npm run test-builds",
     "build-docs": "npm run docs",
     "docs": "gulp jsdoc",
@@ -24,8 +25,8 @@
   "author": "Ely De La Cruz <elycruz@elycruz.com>",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "fjl": "0.24.0",
-    "fjl-error-throwing": "^0.7.7"
+    "fjl": "0.25.2",
+    "fjl-error-throwing": "^0.7.9"
   },
   "devDependencies": {
     "babel-plugin-add-module-exports": "^0.2.1",

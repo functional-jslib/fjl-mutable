@@ -1395,19 +1395,15 @@ fjl-chai-helpers@^0.10.5:
     chai "^4.1.2"
     fjl "^0.17.10"
 
-fjl-error-throwing@^0.7.7:
-  version "0.7.7"
-  resolved "https://registry.yarnpkg.com/fjl-error-throwing/-/fjl-error-throwing-0.7.7.tgz#18e1dceb047f52016879e5ac7646fa08e7dc6ee1"
+fjl-error-throwing@^0.7.9:
+  version "0.7.9"
+  resolved "https://registry.yarnpkg.com/fjl-error-throwing/-/fjl-error-throwing-0.7.9.tgz#ea52b7309e1e1bccc70258bab0a4497a5f07e068"
   dependencies:
-    fjl "0.19.0"
+    fjl "0.25.2"
 
-fjl@0.19.0:
-  version "0.19.0"
-  resolved "https://registry.yarnpkg.com/fjl/-/fjl-0.19.0.tgz#aeec6eb469a12f00c1204af2ab5fbd1f94a4e6c5"
-
-fjl@0.24.0:
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/fjl/-/fjl-0.24.0.tgz#a141c694b19773358403c338f1209660f2bec8ae"
+fjl@0.25.2:
+  version "0.25.2"
+  resolved "https://registry.yarnpkg.com/fjl/-/fjl-0.25.2.tgz#9afc53e0908d2759fa0412517c55efb168667e7a"
 
 fjl@^0.17.10:
   version "0.17.14"
