@@ -1,6 +1,6 @@
 {
   "name": "fjl-mutable",
-  "version": "0.17.1",
+  "version": "0.17.1-next",
   "description": "Typed mutable properties made easy(ier).",
   "main": "dist/package/fjlMutable",
   "module": "dist/package/fjlMutable.mjs",
@@ -25,7 +25,7 @@
   "author": "Ely De La Cruz <elycruz@elycruz.com>",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "fjl": "0.25.2",
+    "fjl": "^1.1.1-next",
     "fjl-error-throwing": "^0.7.9"
   },
   "devDependencies": {

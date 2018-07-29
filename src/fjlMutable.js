@@ -1,9 +1,7 @@
 /**
  * @module fjlMutable
  */
-import {isUndefined, curry, apply, isType} from 'fjl';
-
-import {errorIfNotType, getTypeName} from 'fjl-error-throwing';
+import {isUndefined, curry, apply, isType, toTypeRefName, errorIfNotType} from 'fjl';
 
 /**
  * @param enumerable {Boolean}
@@ -70,7 +68,7 @@ export const
      * @returns {*} - `propValue`
      */
     errorIfNotTypeOnTarget$ = (Type, target, propName, propValue) => {
-        errorIfNotType(getTypeName(Type), target, propName, propValue);
+        errorIfNotType(toTypeRefName(Type), target, propName, propValue);
         return propValue;
     },
 
