@@ -12,8 +12,6 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _fjl = require('fjl');
 
-var _fjlErrorThrowing = require('fjl-error-throwing');
-
 /**
  * @param enumerable {Boolean}
  * @returns {function(*, *)|PropsDefinerCall}
@@ -89,7 +87,7 @@ _makeDescriptorEnumerable = exports._makeDescriptorEnumerable = function _makeDe
  * @returns {*} - `propValue`
  */
 errorIfNotTypeOnTarget$ = exports.errorIfNotTypeOnTarget$ = function errorIfNotTypeOnTarget$(Type, target, propName, propValue) {
-    (0, _fjlErrorThrowing.errorIfNotType)((0, _fjlErrorThrowing.getTypeName)(Type), target, propName, propValue);
+    (0, _fjl.errorIfNotType)((0, _fjl.toTypeRefName)(Type), target, propName, propValue);
     return propValue;
 },
 

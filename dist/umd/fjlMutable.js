@@ -1,16 +1,16 @@
 (function (global, factory) {
     if (typeof define === "function" && define.amd) {
-        define(['exports', 'fjl', 'fjl-error-throwing'], factory);
+        define(['exports', 'fjl'], factory);
     } else if (typeof exports !== "undefined") {
-        factory(exports, require('fjl'), require('fjl-error-throwing'));
+        factory(exports, require('fjl'));
     } else {
         var mod = {
             exports: {}
         };
-        factory(mod.exports, global.fjl, global.fjlErrorThrowing);
+        factory(mod.exports, global.fjl);
         global.fjlMutable = mod.exports;
     }
-})(this, function (exports, _fjl, _fjlErrorThrowing) {
+})(this, function (exports, _fjl) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -131,7 +131,7 @@
      * @returns {*} - `propValue`
      */
     errorIfNotTypeOnTarget$ = exports.errorIfNotTypeOnTarget$ = function errorIfNotTypeOnTarget$(Type, target, propName, propValue) {
-        (0, _fjlErrorThrowing.errorIfNotType)((0, _fjlErrorThrowing.getTypeName)(Type), target, propName, propValue);
+        (0, _fjl.errorIfNotType)((0, _fjl.toTypeRefName)(Type), target, propName, propValue);
         return propValue;
     },
 

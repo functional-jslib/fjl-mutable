@@ -1,4 +1,4 @@
-var fjlMutable = (function (exports,fjl,fjlErrorThrowing) {
+var fjlMutable = (function (exports,fjl) {
 'use strict';
 
 var asyncGenerator = function () {
@@ -236,7 +236,7 @@ var _targetDescriptorTuple = function _targetDescriptorTuple(targetOrTargetDescr
     targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
 };
 var errorIfNotTypeOnTarget$ = function errorIfNotTypeOnTarget$(Type, target, propName, propValue) {
-    fjlErrorThrowing.errorIfNotType(fjlErrorThrowing.getTypeName(Type), target, propName, propValue);
+    fjl.errorIfNotType(fjl.toTypeRefName(Type), target, propName, propValue);
     return propValue;
 };
 var defineProp$ = function defineProp$(Type, target, propName) {
@@ -326,5 +326,5 @@ exports.defineEnumProps = defineEnumProps;
 
 return exports;
 
-}({},fjl,fjlErrorThrowing));
+}({},fjl));
 //# sourceMappingURL=fjl-mutable.js.map

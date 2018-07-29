@@ -1,4 +1,4 @@
-define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlErrorThrowing) {
+define(['exports', 'fjl'], function (exports, _fjl) {
     'use strict';
 
     Object.defineProperty(exports, "__esModule", {
@@ -11,9 +11,6 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
      * @param enumerable {Boolean}
      * @returns {function(*, *)|PropsDefinerCall}
      * @private
-     */
-    /**
-     * @module fjlMutable
      */
     function _getDefineProps$(enumerable) {
         const operation$ = enumerable ? defineEnumProp$ : defineProp$;
@@ -28,6 +25,9 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
 
     /**
      * @note Custom jsdoc type definitions defined toward end of file.
+     */
+    /**
+     * @module fjlMutable
      */
     const
 
@@ -75,7 +75,7 @@ define(['exports', 'fjl', 'fjl-error-throwing'], function (exports, _fjl, _fjlEr
      * @returns {*} - `propValue`
      */
     errorIfNotTypeOnTarget$ = exports.errorIfNotTypeOnTarget$ = (Type, target, propName, propValue) => {
-        (0, _fjlErrorThrowing.errorIfNotType)((0, _fjlErrorThrowing.getTypeName)(Type), target, propName, propValue);
+        (0, _fjl.errorIfNotType)((0, _fjl.toTypeRefName)(Type), target, propName, propValue);
         return propValue;
     },
 

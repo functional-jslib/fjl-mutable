@@ -1,5 +1,4 @@
-import { apply, curry, isType, isUndefined } from 'fjl';
-import { errorIfNotType, getTypeName } from 'fjl-error-throwing';
+import { apply, curry, errorIfNotType, isType, isUndefined, toTypeRefName } from 'fjl';
 
 /**
  * @module fjlMutable
@@ -42,7 +41,7 @@ const _targetDescriptorTuple = targetOrTargetDescrTuple =>
         isType('Array', targetOrTargetDescrTuple) ? // Strict type check for array
             targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
 const errorIfNotTypeOnTarget$ = (Type, target, propName, propValue) => {
-        errorIfNotType(getTypeName(Type), target, propName, propValue);
+        errorIfNotType(toTypeRefName(Type), target, propName, propValue);
         return propValue;
     };
 const defineProp$ = (Type, target, propName, defaultValue = undefined) => {

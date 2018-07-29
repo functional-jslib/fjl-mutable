@@ -9,8 +9,6 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 
 var _fjl = require('fjl');
 
-var _fjlErrorThrowing = require('fjl-error-throwing');
-
 /**
  * @module fjlMutable
  */
@@ -61,7 +59,7 @@ var _targetDescriptorTuple = function _targetDescriptorTuple(targetOrTargetDescr
     targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
 };
 var errorIfNotTypeOnTarget$ = function errorIfNotTypeOnTarget$(Type, target, propName, propValue) {
-    (0, _fjlErrorThrowing.errorIfNotType)((0, _fjlErrorThrowing.getTypeName)(Type), target, propName, propValue);
+    (0, _fjl.errorIfNotType)((0, _fjl.toTypeRefName)(Type), target, propName, propValue);
     return propValue;
 };
 var defineProp$ = function defineProp$(Type, target, propName) {

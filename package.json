@@ -1,11 +1,11 @@
 {
   "name": "fjl-mutable",
-  "version": "0.17.1-next",
+  "version": "0.17.2-next",
   "description": "Typed mutable properties made easy(ier).",
   "main": "dist/package/fjlMutable",
   "module": "dist/package/fjlMutable.mjs",
   "scripts": {
-    "pre-publish": "npm test build test-builds",
+    "pre-publish": "npm test && npm run build && npm run test-builds",
     "build": "gulp clean && gulp build && npm run test-builds",
     "build-docs": "npm run docs",
     "docs": "gulp jsdoc",
