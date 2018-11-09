@@ -1,9 +1,9 @@
 {
   "name": "fjl-mutable",
-  "version": "0.18.1",
+  "version": "0.18.2",
   "description": "Typed mutable properties made easy(ier).",
-  "main": "dist/package/fjlMutable",
-  "module": "dist/package/fjlMutable.mjs",
+  "main": "dist/cjs/fjlMutable",
+  "module": "dist/es6-module/fjlMutable.mjs",
   "scripts": {
     "build": "npm test && gulp readme build docs && npm run test-builds",
     "test-builds": "jest --testMatch **/tests/*-test-*.js",
