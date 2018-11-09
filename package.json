@@ -1,16 +1,16 @@
 {
   "name": "fjl-mutable",
-  "version": "0.17.2-next",
+  "version": "0.18.0",
   "description": "Typed mutable properties made easy(ier).",
   "main": "dist/package/fjlMutable",
   "module": "dist/package/fjlMutable.mjs",
   "scripts": {
-    "pre-publish": "npm test && npm run build && npm run test-builds",
-    "build": "gulp clean && gulp build && npm run test-builds",
-    "build-docs": "npm run docs",
-    "docs": "gulp jsdoc",
-    "test-builds": "mocha tests/**/*-test-*.js --plugins babel-plugin-add-module-exports --require babel-register",
-    "test": "mocha tests/**/test-*.js --plugins babel-plugin-add-module-exports --require babel-register"
+    "build": "npm test && gulp readme build docs && npm run test-builds",
+    "test-builds": "jest --testMatch **/tests/*-test-*.js",
+    "test": "jest --testMatch **/tests/test-*.js",
+    "eslint": "gulp eslint",
+    "readme": "gulp readme",
+    "docs": "gulp docs"
   },
   "keywords": [
     "fjl",
@@ -25,34 +25,169 @@
   "author": "Ely De La Cruz <elycruz@elycruz.com>",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "fjl": "^1.1.1-next",
-    "fjl-error-throwing": "^0.7.9"
+    "fjl": "^1.6.2"
   },
   "devDependencies": {
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-es2015-rollup": "^3.0.0",
-    "babel-register": "^6.26.0",
-    "chai": "^4.1.2",
-    "chalk": "^2.1.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/plugin-transform-modules-amd": "^7.1.0",
+    "@babel/plugin-transform-modules-commonjs": "^7.1.0",
+    "@babel/plugin-transform-modules-umd": "^7.1.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "@types/jest": "^23.3.7",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.4.2",
+    "babel-upgrade": "0.0.24",
     "del": "^3.0.0",
-    "fjl-chai-helpers": "^0.10.5",
-    "gulp": "^3.9.1",
-    "gulp-babel": "^7.0.0",
-    "gulp-better-rollup": "^1.1.1",
+    "gulp": "4.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-better-rollup": "^3.4.0",
     "gulp-concat": "^2.6.1",
-    "gulp-eslint": "^4.0.0",
-    "gulp-fncallback": "^2.0.2",
-    "gulp-header": "^1.8.9",
-    "gulp-jsdoc3": "^1.0.1",
-    "gulp-mocha": "^4.3.1",
-    "gulp-uglify": "^3.0.0",
-    "lazypipe": "^1.0.1",
-    "mocha": "^4.0.1",
-    "rollup": "^0.50.0",
-    "rollup-plugin-babel": "^3.0.2",
+    "gulp-duration": "0.0.0",
+    "gulp-eslint": "^5.0.0",
+    "gulp-header": "^2.0.5",
+    "gulp-if": "^2.0.2",
+    "gulp-jsdoc3": "^2.0.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-uglify": "^3.0.1",
+    "jest": "^23.6.0",
+    "rollup": "^0.66.6",
+    "rollup-plugin-babel": "^4.0.1",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "yargs": "^9.0.1"
+    "tui-jsdoc-template": "^1.2.2"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "buildConfig": {
+    "inputModuleName": "fjlMutable",
+    "inputFilePath": "./src/fjlMutable.js",
+    "outputFileName": "fjl-mutable.js",
+    "outputFileNameMjs": "fjl-mutable.mjs",
+    "outputFileNameMin": "fjl-mutable.min.js",
+    "srcsGlob": "./src/**/*.js",
+    "paths": {
+      "dist": "./dist",
+      "docs": "./docs"
+    },
+    "folderNames": {
+      "amd": "amd",
+      "cjs": "cjs",
+      "iife": "iife",
+      "umd": "umd",
+      "es6Module": "es6-module",
+      "package": "package"
+    },
+    "es6ModuleRollup": {
+      "config": {
+        "input": "./src/fjlMutable.js",
+        "external": [
+          "fjl",
+          "fjl-mutable"
+        ]
+      },
+      "write": {
+        "file": "./dist/es6-module/fjl-mutable.js",
+        "format": "es",
+        "sourcemap": true
+      }
+    },
+    "buildAmdOptions": {
+      "babel": {
+        "babelrc": false,
+        "presets": [
+          "@babel/preset-env"
+        ],
+        "plugins": [
+          "@babel/plugin-transform-modules-amd"
+        ],
+        "exclude": [
+          "node_modules/**/*"
+        ]
+      }
+    },
+    "buildCjsOptions": {
+      "babel": {
+        "babelrc": false,
+        "presets": [
+          "@babel/preset-env"
+        ],
+        "plugins": [
+          "@babel/plugin-transform-modules-commonjs"
+        ],
+        "exclude": [
+          "node_modules/**/*"
+        ]
+      }
+    },
+    "buildUmdOptions": {
+      "babel": {
+        "babelrc": false,
+        "presets": [
+          "@babel/preset-env"
+        ],
+        "plugins": [
+          "@babel/plugin-transform-modules-umd"
+        ],
+        "exclude": [
+          "node_modules/**/*"
+        ]
+      }
+    },
+    "buildIifeOptions": {
+      "babel": {
+        "babelrc": false,
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "modules": false
+            }
+          ]
+        ],
+        "exclude": [
+          "node_modules/**/*"
+        ]
+      }
+    },
+    "uglifyOptions": {},
+    "readme": {
+      "files": [
+        "./markdown-fragments/readme-header.md",
+        "./markdown-fragments/sections/sections.md",
+        "./markdown-fragments/sections/requirements.md",
+        "./markdown-fragments/sections/getting-started.md",
+        "./markdown-fragments/sections/docs.md",
+        "./markdown-fragments-generated/module-and-member-list.md",
+        "./markdown-fragments/sections/docs/docs-footer.md",
+        "./markdown-fragments/sections/development.md",
+        "./markdown-fragments/sections/license.md",
+        "./markdown-fragments/sections/resources.md",
+        "./markdown-fragments/sections/changelog.md"
+      ]
+    },
+    "jsdoc": {
+      "opts": {
+        "template": "node_modules/tui-jsdoc-template",
+        "encoding": "utf8",
+        "destination": "./docs/",
+        "recurse": true,
+        "templates": {
+          "useCollapsibles": false
+        }
+      },
+      "templates": {
+        "logo": {
+          "url": "http://elycruz.com/fjl-logo-v2.svg",
+          "width": "144px",
+          "height": "55px",
+          "link": "https://github.com/functional-jslib/fjl-mutable"
+        },
+        "footerText": "fjl-mutable library - BSD 3.0 License - JsDoc Template -> tui-jsdoc-template - by NHN Entertainment - Frontend Development Lab"
+      }
+    }
   }
 }

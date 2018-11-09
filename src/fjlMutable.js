@@ -1,88 +1,83 @@
 /**
  * @module fjlMutable
+ * @note Custom jsdoc type definitions defined toward end of file.
  */
-import {isUndefined, curry, apply, isType, toTypeRefName, errorIfNotType} from 'fjl';
+import {isUndefined, curry, apply, isType, errorIfNotType} from 'fjl';
 
 /**
- * @param enumerable {Boolean}
+ * Creates `defineProps` and `defineEnumProps` methods based on `{enumerable}` param.
+ * @param {{enumerable: Boolean}}
  * @returns {function(*, *)|PropsDefinerCall}
  * @private
  */
-function _getDefineProps$ (enumerable) {
-    const operation$ = enumerable ? defineEnumProp$ : defineProp$;
+function createDefinePropsMethod ({enumerable}) {
+    const operation = enumerable ? defineEnumProp : defineProp;
     return (argTuples, target) => {
         argTuples.forEach(argTuple => {
             const [TypeRef, propName, defaultValue] = argTuple;
-            apply(operation$, [TypeRef, target, propName, defaultValue]);
+            apply(operation, [TypeRef, target, propName, defaultValue]);
         });
         return target;
     };
 }
 
-/**
- * @note Custom jsdoc type definitions defined toward end of file.
- */
 export const
 
     /**
-     * @function module:fjlMutable._descriptorForSettable
+     * Creates a descriptor for a property which is settable but throws
+     * errors when the `Type` is disobeyed.
+     * @function module:fjlMutable.createTypedDescriptor
      * @param Type {TypeRef} - {String|Function}
      * @param target {*}
      * @param propName {String}
      * @returns {Descriptor} - Property descriptor with just getter and setter.
-     * @private
      */
-    _descriptorForSettable = (Type, target, propName) => {
+    createTypedDescriptor = (Type, target, propName) => {
         let _value;
         return {
             get: function () {
                 return _value;
             },
             set: function (value) {
-                _value = errorIfNotTypeOnTarget(Type, propName, target, value);
+                _value = errorIfNotType(Type, propName, target, value);
             }
         };
     },
 
     /**
-     * @function module:fjlMutable._makeDescriptorEnumerable
+     * Returns a target-descriptor tuple whose 'descriptor' will be set to
+     *  enumerable (`enumerable: true`).
+     * @function module:fjlMutable.toEnumerableDescriptor
      * @param {TargetDescriptorTuple} - [target, descriptor] tuple.
      * @returns {TargetDescriptorTuple} - Array of target and descriptor.
-     * @private
      */
-    _makeDescriptorEnumerable = ([target, descriptor]) => {
+    toEnumerableDescriptor = ([target, descriptor]) => {
         descriptor.enumerable = true;
         return [target, descriptor];
     },
 
-    _targetDescriptorTuple = targetOrTargetDescrTuple =>
-        isType('Array', targetOrTargetDescrTuple) ? // Strict type check for array
-            targetOrTargetDescrTuple : [targetOrTargetDescrTuple],
-
     /**
-     * @function module:fjlMutable.errorIfNotTypeOnTarget$
-     * @param Type {TypeRef} - {String|Function}
-     * @param target {*}
-     * @param propName {String}
-     * @param propValue {*}
-     * @returns {*} - `propValue`
+     * Returns an target and descriptor tuple from given.
+     * @function module:fjlMutable.toTargetDescriptorTuple
+     * @param targetOrTargetDescriptorTuple {(*|Array<*, *>)} - Target object or tuple of target and descriptor.
+     * @returns {(Array<*>|Array<*,*>)}
      */
-    errorIfNotTypeOnTarget$ = (Type, target, propName, propValue) => {
-        errorIfNotType(toTypeRefName(Type), target, propName, propValue);
-        return propValue;
-    },
+    toTargetDescriptorTuple = targetOrTargetDescriptorTuple =>
+        isType('Array', targetOrTargetDescriptorTuple) ? // Strict type check for array
+            targetOrTargetDescriptorTuple : [targetOrTargetDescriptorTuple],
 
     /**
-     * @function module:fjlMutable.defineProp$
+     * Allows you to define a "typed" property on given `target`.
+     * @function module:fjlMutable.defineProp
      * @param Type {TypeRef} - {String|Function}
      * @param target {TargetDescriptorTuple} - Target or array of target and descriptor ([target, descriptor]).
      * @param propName {String}
      * @param [defaultValue=undefined] {*}
      * @returns {TargetDescriptorTuple}
      */
-    defineProp$ = (Type, target, propName, defaultValue = undefined) => {
-        const [_target, _descriptor] = _targetDescriptorTuple(target),
-            descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
+    defineProp = (Type, target, propName, defaultValue = undefined) => {
+        const [_target, _descriptor] = toTargetDescriptorTuple(target),
+            descriptor = _descriptor || createTypedDescriptor(Type, _target, propName);
         Object.defineProperty(_target, propName, descriptor);
         if (!isUndefined(defaultValue)) {
             _target[propName] = defaultValue;
@@ -91,19 +86,20 @@ export const
     },
 
     /**
-     * @function module:fjlMutable.defineProp$
+     * Allows you to define a "typed", enumerated property on `target`.
+     * @function module:fjlMutable.defineEnumProp
      * @param Type {TypeRef} - {String|Function}
      * @param target {TargetDescriptorTuple} - Target or array of target and descriptor ([target, descriptor]).
      * @param propName {String}
      * @param [defaultValue=undefined] {*}
      * @returns {TargetDescriptorTuple}
      */
-    defineEnumProp$ = (Type, target, propName, defaultValue = undefined) => {
-        const [_target, _descriptor] = _targetDescriptorTuple(target),
-            descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
-        return defineProp$(
+    defineEnumProp = (Type, target, propName, defaultValue = undefined) => {
+        const [_target, _descriptor] = toTargetDescriptorTuple(target),
+            descriptor = _descriptor || createTypedDescriptor(Type, _target, propName);
+        return defineProp(
             Type,
-            _makeDescriptorEnumerable([_target, descriptor]),
+            toEnumerableDescriptor([_target, descriptor]),
             propName,
             defaultValue
         );
@@ -111,76 +107,22 @@ export const
 
     /**
      * Allows you to define multiple enum props at once on target.
-     * @function module:fjlMutable.defineEnumProps$
+     * @function module:fjlMutable.defineEnumProps
      * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineEnumProp`.
      * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
      * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineEnumProp`.
      */
-    defineEnumProps$ = _getDefineProps$(true),
+    defineEnumProps = curry(createDefinePropsMethod({enumerable: true})),
 
     /**
      * Allows you to define multiple props at once on target.
-     * @function module:fjlMutable.defineProps$
-     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineProp`.
-     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
-     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineProp`.
-     */
-    defineProps$ = _getDefineProps$(false),
-
-    /**
-     * @function module:fjlMutable.errorIfNotTypeOnTarget
-     * @param Type {TypeRef} - {String|Function}
-     * @param target {*}
-     * @param propName {String}
-     * @param propValue {*}
-     * @returns {*} - `propValue`
-     * @curried
-     */
-    errorIfNotTypeOnTarget = curry(errorIfNotTypeOnTarget$),
-
-    /**
-     * @function module:fjlMutable.defineProp
-     * @param Type {TypeRef} - {String|Function}
-     * @param {TargetDescriptorTuple} - [target, descriptor].
-     * @param propName {String}
-     * @param [defaultValue=undefined] {*}
-     * @returns {TargetDescriptorTuple}
-     * @curried
-     */
-    defineProp = curry(defineProp$),
-
-    /**
-     * @function module:fjlMutable.defineEnumProp
-     * @param Type {TypeRef} - {String|Function}
-     * @param {TargetDescriptorTuple} - [target, descriptor].
-     * @param propName {String}
-     * @param [defaultValue=undefined] {*}
-     * @returns {TargetDescriptorTuple}
-     * @curried
-     */
-    defineEnumProp = curry(defineEnumProp$),
-
-    /**
-     * Same as `defineProps$` but curried:
-     *  Allows you to define multiple props at once on target.
      * @function module:fjlMutable.defineProps
      * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineProp`.
      * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
      * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineProp`.
      * @curried
      */
-    defineProps = curry(defineProps$),
-
-    /**
-     * Same as `defineEnumProps$` but curried:
-     *  Allows you to define multiple enum props at once on target.
-     * @function module:fjlMutable.defineEnumProps
-     * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineEnumProp`.
-     * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
-     * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineEnumProp`.
-     * @curried
-     */
-    defineEnumProps = curry(defineEnumProps$)
+    defineProps = curry(createDefinePropsMethod({enumerable: false}))
 
 ;
 

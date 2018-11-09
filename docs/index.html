@@ -2,23 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>Home | Home</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-jsdoc.css">
     <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
-    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+    <link type="text/css" rel="stylesheet" href="styles/tui-doc.css">
+
+    
 </head>
-
 <body>
+<nav class="lnb" id="lnb">
+    <div class="logo" style="width: 144px; height: 55px">
+        
+            <a href="https://github.com/functional-jslib/fjl-mutable" rel="noopener noreferrer" target="_blank">
+                <img src="http://elycruz.com/fjl-logo-v2.svg" width="100%" height="100%">
+            </a>
+        
+    </div>
+    <div class="title">
+        <h1><a href="index.html" class="link">Home</a></h1>
+        
+    </div>
+    <div class="search-container" id="search-container">
+        <input type="text" placeholder="Search">
+        <ul></ul>
+    </div>
+    
+    <div class="lnb-api hidden"><h3>Modules</h3><ul><li><a href="module-fjlMutable.html">fjlMutable</a><button type="button" class="hidden toggle-subnav btn btn-link">  <span class="glyphicon glyphicon-plus"></span></button><div class="hidden" id="module:fjlMutable_sub"><div class="member-type">Methods</div><ul class="inner"><li><a href="module-fjlMutable.html#.createTypedDescriptor">createTypedDescriptor</a></li><li><a href="module-fjlMutable.html#.defineEnumProp">defineEnumProp</a></li><li><a href="module-fjlMutable.html#.defineEnumProps">defineEnumProps</a></li><li><a href="module-fjlMutable.html#.defineProp">defineProp</a></li><li><a href="module-fjlMutable.html#.defineProps">defineProps</a></li><li><a href="module-fjlMutable.html#.toEnumerableDescriptor">toEnumerableDescriptor</a></li><li><a href="module-fjlMutable.html#.toTargetDescriptorTuple">toTargetDescriptorTuple</a></li></ul></div></li></ul></div><div class="lnb-api hidden"><h3><a href="global.html">Global</a></h3></div>
+</nav>
+<div id="resizer"></div>
 
-<div id="main">
-
-    <h1 class="page-title">Home</h1>
-
+<div class="main" id="main">
     
 
 
@@ -26,10 +46,6 @@
     
 
 
-    <h3> </h3>
-
-
-
 
 
 
@@ -38,27 +54,46 @@
 
 
     
-
-
 
 
     <section>
-        <article><h1>fjl-mutable</h1><p>Helpers for setting mutable strictly typed properties on objects.</p>
-<h2>Docs</h2><p>JsDocs here: https://functional-jslib.github.io/fjl-mutable/module-fjlMutable.html</p>
-<h2>Stars of the show:</h2><p><code>defineEnumProp</code> and <code>defineEnumProps</code> and their variants (<code>defineEnumProp$</code> and <code>defineEnumProps$</code>).</p>
-<p><strong>Note:</strong> All functions detailed below are curried and have uncurried variants (
-    function name(s) with trailing <code>$</code> character: E.g., <code>defineEnumProp$...</code> ).</p>
-<h2>Virtual Types</h2><p>In order to more precisely and easily write 'readme' docs here 
-I've defined some virtual types to better understand and more concisely 
-write the docs.  Virtual types proceed:</p>
-<ul>
-<li><code>TypeRef</code> {String|Function} - String name of constructor or constructor itself.</li>
-<li><code>Descriptor</code> {Object} - Prop descriptor.  We generate descriptors of the form
-  <code>{Object&lt;get, set, [enumerable]}</code> when they are not passed in. </li>
-<li><code>Target</code> {*} - Target to define property on.</li>
-<li><code>TargetOrTargetTuple</code> {*|Array<Target, Descriptor>} - A target to operate on or target and descriptor to operate on.</li>
+        <article class="readme"><p><a href="https://travis-ci.org/functional-jslib/fjl-mutable"><img src="https://travis-ci.org/functional-jslib/fjl-mutable.png" alt="Build Status"></a>
+<a href="http://badge.fury.io/gh/functional-jslib%2Ffjl-mutable"><img src="https://badge.fury.io/gh/functional-jslib%2Ffjl-mutable.svg" alt="GitHub version"></a>
+<a href="http://badge.fury.io/js/fjl-mutable"><img src="https://badge.fury.io/js/fjl-mutable.svg" alt="NPM version"></a>
+<a href="https://david-dm.org/functional-jslib/fjl-mutable"><img src="https://david-dm.org/functional-jslib/fjl-mutable.png" alt="Dependencies"></a></p>
+<h1>fjl-mutable</h1><p>Functional and &quot;typed&quot; <code>defineProp</code>, <code>defineEnumProp</code>, <code>defineProps</code>, <code>defineEnumProps</code> functionality.</p>
+<h2>Sections in Readme:</h2><ul>
+<li><a href="#requirements">Requirements</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#docs">Docs</a></li>
+<li><a href="#motivations">Motivation</a></li>
+<li><a href="#development">Development</a></li>
+<li><a href="#supported-platforms">Supported Platforms</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#resources">Resources</a></li>
+<li><a href="#change-log">Change log</a></li>
 </ul>
-<h2>Exports</h2><h3><code>defineProp(TypeRef, propName, targetOrTargetTuple, defaultValue = undefined) : Descriptor</code></h3><p>Defines a property on target that is constricted to given Type (<code>TypeRef</code>).
+<h2>Requirements:</h2><ul>
+<li>Javascript Ecmascript 5+.</li>
+</ul>
+<h3>Supported Platforms:</h3><h4>Browsers</h4><ul>
+<li>IE9+, and all other modern day browsers.</li>
+</ul>
+<h4>NodeJs</h4><ul>
+<li>8+</li>
+</ul>
+<h2>Getting Started:</h2><h3>In NodeJs:</h3><h4>Using es2015 modules:</h4><pre class="prettyprint source"><code>import {...} from 'fjl-mutable';</code></pre><h4>Using CommonJs modules:</h4><pre class="prettyprint source"><code>const {...} = require('fjl-mutable');</code></pre><h3>In Browser:</h3><p>See desired export type below:</p>
+<ul>
+<li>'./dist/amd/' - Asynchronous module format.</li>
+<li>'./dist/cjs/' - CommonJs module format.</li>
+<li>'./dist/umd/' - Universal module definition format.</li>
+<li>'./dist/iife/' - Immediately Invoked Function Execution - (exports <code>fjlMutable</code> as a global).</li>
+<li>'./dist/es6-module/' - Ecmascript 6 module format.</li>
+</ul>
+<h2>Docs</h2><p><strong>JSDocs</strong> are here (https://functional-jslib.github.io/fjl-mutable/) [https://functional-jslib.github.io/fjl-mutable/].</p>
+<h3><code>fjlMutable</code> methods</h3><pre class="prettyprint source"><code>createTypedDescriptor, toEnumerableDescriptor, toTargetDescriptorTuple,
+defineProp, defineEnumProp, defineEnumProps, defineProps</code></pre><p>In-line summary docs follow:</p>
+<h3><code>defineProp(TypeRef, propName, targetOrTargetTuple, defaultValue = undefined) : Descriptor</code></h3><p>Defines a property on target that is constricted to given Type (<code>TypeRef</code>).
 HaskellType: <code>defineProp :: TypeRef -&gt; String -&gt; TargetOrTargetTuple -&gt; Any -&gt; Descriptor</code></p>
 <h3><code>defineEnumProp(TypeRef, propName, targetOrTargetTuple, defaultValue = undefined) : Descriptor</code></h3><p>Defines an enumerable property on target that is constricted to given Type (<code>TypeRef</code>).
 HaskellType: <code>defineEnumProp :: TypeRef -&gt; String -&gt; TargetOrTargetTuple -&gt; Any -&gt; Descriptor</code></p>
@@ -119,8 +154,8 @@ user.age = '99'; // Throws (detailed) error since type does not match.</p>
 Same as `defineEnumProps` though doesn't make props enumerable on target.  See params description and examples below:
 #### Params:
 - `argTuples {Array}` - Array of argument lists of the same type that `defineEnumProps` takes: 
-    E.g., `Array.&lt;TypeRef, String, TargetOrTargetTuple, Any>`  with one distinction: 3rd argument is optional (target argument).</code></pre><p>const someTarget = {};
-defineEnumProps([
+    E.g., `Array.&lt;TypeRef, String, TargetOrTargetTuple, Any>`  with one distinction: 3rd argument is optional (target argument).</code></pre><p>const someTarget = {};</p>
+<p>defineEnumProps([
     [String, 'someProp', someDefaultValue],
     [String, 'someProp2', someDefaultValue2],
     [String, 'someProp3', someTarget, someDefaultValue3],
@@ -147,55 +182,47 @@ class User {
 <p>// Later..
 const user = new User();
 user.firstName = &quot;Some name&quot;;
-user.age = '99'; // Throws (detailed) error since type does not match.</p>
-<pre class="prettyprint source"><code>
-### `definePropArray(propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
-Sets a property on target and enforces `Array` type (error if not `Array` type).
-- `propName {String}`
-- `targetOrTargetTuple {*|Array&lt;Target, PropDescriptor>}`
-Example:</code></pre><pre class="prettyprint source"><code>const target = {},
-    defaultList = [1, 2, 3],
-    defaultListCopy = defaultListCopy.slice(0);
-definePropArray('someListProp', target, defaultListCopy);
-// Later..
-target.someListProp === defaultListCopy; // true
-target.someListProp = []; // Matches type, is ok
-target.someListProp = 99; // Detailed error thrown, types don't match</code></pre><pre class="prettyprint source"><code>### `definePropFunction (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
-Same as `definePropArray` but enforces `Function`.
-
-### `definePropNumber (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
-Same as `definePropArray` but enforces `Number`.
-
-### `definePropBoolean (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
-Same as `definePropArray` but enforces `Boolean`.
-
-### `definePropString (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
-Same as `definePropArray` but enforces `String`.
-
-### `defineEnumPropArray(propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple`
-Sets an enumerable property on target and enforces the `Array` type on it (error if not `Array` type etc.).
-- `propName {String}`
-- `targetOrTargetTuple {*|Array&lt;Target, PropDescriptor>}`
-Example:</code></pre><pre class="prettyprint source"><code>const target = {},
-    defaultList = [1, 2, 3],
-    defaultListCopy = defaultListCopy.slice(0);
-defineEnumPropArray('someListProp', target, defaultListCopy);
-// Later..
-target.someListProp === defaultListCopy; // true
-target.someListProp = []; // Matches type, is ok
-target.someListProp = 99; // Detailed error thrown, types don't match</code></pre><p>```</p>
-<h3><code>defineEnumPropFunction (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple</code></h3><p>Same as <code>defineEnumPropArray</code> but enforces <code>Function</code>.</p>
-<h3><code>defineEnumPropNumber (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple</code></h3><p>Same as <code>defineEnumPropArray</code> but enforces <code>Number</code>.</p>
-<h3><code>defineEnumPropBoolean (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple</code></h3><p>Same as <code>defineEnumPropArray</code> but enforces <code>Boolean</code>.</p>
-<h3><code>defineEnumPropString (propName, targetOrTargetTuple, defaultValue = undefined) : TargetTuple</code></h3><p>Same as <code>defineEnumPropArray</code> but enforces <code>String</code>.</p>
-<h3>Development</h3><ol>
-<li><code>npm install</code></li>
-<li>Look at node scripts in package.json.</li>
-</ol>
-<h3>Testing</h3><ol>
-<li><code>npm test</code> (after <code>npm install</code>).</li>
-</ol>
-<h2>License</h2><p>MIT</p></article>
+user.age = '99'; // Throws (detailed) error since type does not match.
+```</p>
+<h2>Development:</h2><ul>
+<li>For commands see './package.json' scripts.</li>
+</ul>
+<h3>Dir structure</h3><ul>
+<li>Everything is in './src'.</li>
+<li>Distribution is in './dist'.</li>
+<li>Docs are in './docs'.</li>
+</ul>
+<h3>Testing</h3><p>Using <code>jest</code> (see './package.json' scripts).</p>
+<h2>License:</h2><p>BSD 3 Clause - Included in sources.</p>
+<h2>Resources:</h2><ul>
+<li><code>defineProperty</code> - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty</li>
+<li><code>defineProperties</code> - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperties</li>
+<li>Data Types - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures</li>
+</ul>
+<h2>Change log</h2><h3>0.18.0</h3><h4>Breaking changes</h4><ul>
+<li>Removed uncurried methods (methods ending with <code>$</code>) (use curried methods instead).
+<em>Removed</em>:</li>
+<li><code>errorIfNotTypeOnTarget$</code> - ('fjl' provides this now)</li>
+<li><code>errorIfNotTypeOnTarget</code> - (&quot;&quot;)</li>
+<li><code>defineEnumProps$</code></li>
+<li><p><code>defineProps$</code></p>
+</li>
+<li><p>Renamed auxillary methods:</p>
+<ul>
+<li><code>_descriptorForSettable</code> becomes <code>createTypedDescriptor</code>.</li>
+<li><code>_makeDescriptorEnumerable</code> becomes <code>toEnumerableDescriptor</code>.</li>
+<li><code>_targetDescriptorTuple</code> becomes <code>toTargetDescriptorTuple</code>.</li>
+</ul>
+</li>
+</ul>
+<h4>Other changes:</h4><ul>
+<li>Normalized API (removed un-curried methods from exports and non-api specific (un-required) methods).</li>
+<li>Updated build process (using babel7 now).</li>
+<li>Replaced <code>mocha</code> and <code>chai</code> with <code>jest</code>.</li>
+<li>Changed license from &quot;MIT&quot; to &quot;BSD3&quot;.</li>
+<li>Version and build tag links to top of readme file.</li>
+<li>Et. al.</li>
+</ul></article>
     </section>
 
 
@@ -205,17 +232,24 @@ target.someListProp = 99; // Detailed error thrown, types don't match</code></pr
 
 </div>
 
-<nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-fjlMutable.html">fjlMutable</a></li></ul><h3><a href="global.html">Global</a></h3>
-</nav>
-
-<br class="clear">
-
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Dec 09 2017 22:29:26 GMT-0500 (Eastern Standard Time)
+    <img class="logo" src="http://elycruz.com/fjl-logo-v2.svg" style="width: 144px; height: 55px">
+    <div class="footer-text">fjl-mutable library - BSD 3.0 License - JsDoc Template -> tui-jsdoc-template - by NHN Entertainment - Frontend Development Lab</div>
 </footer>
+<script>prettyPrint();</script>
+<script src="scripts/jquery.min.js"></script>
+<script src="scripts/tui-doc.js"></script>
+<script src="scripts/linenumber.js"></script>
 
-<script> prettyPrint(); </script>
-<script src="scripts/linenumber.js"> </script>
+    <script>
+        var id = 'package:undefined_sub'.replace(/"/g, '_');
+        var selectedApi = document.getElementById(id); // do not use jquery selector
+        var $selectedApi = $(selectedApi);
+
+        $selectedApi.removeClass('hidden');
+        $selectedApi.parent().find('.glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+        showLnbApi();
+    </script>
+
 </body>
 </html>

@@ -1,155 +1,15 @@
 var fjlMutable = (function (exports,fjl) {
-'use strict';
+  'use strict';
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
+  function _slicedToArray(arr, i) {
+    return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest();
   }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
+  function _arrayWithHoles(arr) {
+    if (Array.isArray(arr)) return arr;
   }
 
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var slicedToArray = function () {
-  function sliceIterator(arr, i) {
+  function _iterableToArrayLimit(arr, i) {
     var _arr = [];
     var _n = true;
     var _d = false;
@@ -166,7 +26,7 @@ var slicedToArray = function () {
       _e = err;
     } finally {
       try {
-        if (!_n && _i["return"]) _i["return"]();
+        if (!_n && _i["return"] != null) _i["return"]();
       } finally {
         if (_d) throw _e;
       }
@@ -175,156 +35,202 @@ var slicedToArray = function () {
     return _arr;
   }
 
-  return function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      return sliceIterator(arr, i);
-    } else {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-    }
-  };
-}();
+  function _nonIterableRest() {
+    throw new TypeError("Invalid attempt to destructure non-iterable instance");
+  }
 
-/**
- * @module fjlMutable
- */
-/**
- * @param enumerable {Boolean}
- * @returns {function(*, *)|PropsDefinerCall}
- * @private
- */
-function _getDefineProps$(enumerable) {
-    var operation$ = enumerable ? defineEnumProp$ : defineProp$;
+  /**
+   * Creates `defineProps` and `defineEnumProps` methods based on `{enumerable}` param.
+   * @param {{enumerable: Boolean}}
+   * @returns {function(*, *)|PropsDefinerCall}
+   * @private
+   */
+
+  function createDefinePropsMethod(_ref) {
+    var enumerable = _ref.enumerable;
+    var operation = enumerable ? defineEnumProp : defineProp;
     return function (argTuples, target) {
-        argTuples.forEach(function (argTuple) {
-            var _argTuple = slicedToArray(argTuple, 3),
-                TypeRef = _argTuple[0],
-                propName = _argTuple[1],
-                defaultValue = _argTuple[2];
+      argTuples.forEach(function (argTuple) {
+        var _argTuple = _slicedToArray(argTuple, 3),
+            TypeRef = _argTuple[0],
+            propName = _argTuple[1],
+            defaultValue = _argTuple[2];
 
-            fjl.apply(operation$, [TypeRef, target, propName, defaultValue]);
-        });
-        return target;
+        fjl.apply(operation, [TypeRef, target, propName, defaultValue]);
+      });
+      return target;
     };
-}
+  }
 
-/**
- * @note Custom jsdoc type definitions defined toward end of file.
- */
-var _descriptorForSettable = function _descriptorForSettable(Type, target, propName) {
-    var _value = void 0;
+  var 
+  /**
+   * Creates a descriptor for a property which is settable but throws
+   * errors when the `Type` is disobeyed.
+   * @function module:fjlMutable.createTypedDescriptor
+   * @param Type {TypeRef} - {String|Function}
+   * @param target {*}
+   * @param propName {String}
+   * @returns {Descriptor} - Property descriptor with just getter and setter.
+   */
+  createTypedDescriptor = function createTypedDescriptor(Type, target, propName) {
+    var _value;
+
     return {
-        get: function get$$1() {
-            return _value;
-        },
-        set: function set$$1(value) {
-            _value = errorIfNotTypeOnTarget(Type, propName, target, value);
-        }
+      get: function get() {
+        return _value;
+      },
+      set: function set(value) {
+        _value = fjl.errorIfNotType(Type, propName, target, value);
+      }
     };
-};
-var _makeDescriptorEnumerable = function _makeDescriptorEnumerable(_ref) {
-    var _ref2 = slicedToArray(_ref, 2),
-        target = _ref2[0],
-        descriptor = _ref2[1];
+  },
+
+  /**
+   * Returns a target-descriptor tuple whose 'descriptor' will be set to
+   *  enumerable (`enumerable: true`).
+   * @function module:fjlMutable.toEnumerableDescriptor
+   * @param {TargetDescriptorTuple} - [target, descriptor] tuple.
+   * @returns {TargetDescriptorTuple} - Array of target and descriptor.
+   */
+  toEnumerableDescriptor = function toEnumerableDescriptor(_ref2) {
+    var _ref3 = _slicedToArray(_ref2, 2),
+        target = _ref3[0],
+        descriptor = _ref3[1];
 
     descriptor.enumerable = true;
     return [target, descriptor];
-};
-var _targetDescriptorTuple = function _targetDescriptorTuple(targetOrTargetDescrTuple) {
-    return fjl.isType('Array', targetOrTargetDescrTuple) ? // Strict type check for array
-    targetOrTargetDescrTuple : [targetOrTargetDescrTuple];
-};
-var errorIfNotTypeOnTarget$ = function errorIfNotTypeOnTarget$(Type, target, propName, propValue) {
-    fjl.errorIfNotType(fjl.toTypeRefName(Type), target, propName, propValue);
-    return propValue;
-};
-var defineProp$ = function defineProp$(Type, target, propName) {
+  },
+
+  /**
+   * Returns an target and descriptor tuple from given.
+   * @function module:fjlMutable.toTargetDescriptorTuple
+   * @param targetOrTargetDescriptorTuple {(*|Array<*, *>)} - Target object or tuple of target and descriptor.
+   * @returns {(Array<*>|Array<*,*>)}
+   */
+  toTargetDescriptorTuple = function toTargetDescriptorTuple(targetOrTargetDescriptorTuple) {
+    return fjl.isType('Array', targetOrTargetDescriptorTuple) ? // Strict type check for array
+    targetOrTargetDescriptorTuple : [targetOrTargetDescriptorTuple];
+  },
+
+  /**
+   * Allows you to define a "typed" property on given `target`.
+   * @function module:fjlMutable.defineProp
+   * @param Type {TypeRef} - {String|Function}
+   * @param target {TargetDescriptorTuple} - Target or array of target and descriptor ([target, descriptor]).
+   * @param propName {String}
+   * @param [defaultValue=undefined] {*}
+   * @returns {TargetDescriptorTuple}
+   */
+  defineProp = function defineProp(Type, target, propName) {
     var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
-    var _targetDescriptorTupl = _targetDescriptorTuple(target),
-        _targetDescriptorTupl2 = slicedToArray(_targetDescriptorTupl, 2),
-        _target = _targetDescriptorTupl2[0],
-        _descriptor = _targetDescriptorTupl2[1],
-        descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
+    var _toTargetDescriptorTu = toTargetDescriptorTuple(target),
+        _toTargetDescriptorTu2 = _slicedToArray(_toTargetDescriptorTu, 2),
+        _target = _toTargetDescriptorTu2[0],
+        _descriptor = _toTargetDescriptorTu2[1],
+        descriptor = _descriptor || createTypedDescriptor(Type, _target, propName);
 
     Object.defineProperty(_target, propName, descriptor);
+
     if (!fjl.isUndefined(defaultValue)) {
-        _target[propName] = defaultValue;
+      _target[propName] = defaultValue;
     }
+
     return [_target, descriptor];
-};
-var defineEnumProp$ = function defineEnumProp$(Type, target, propName) {
+  },
+
+  /**
+   * Allows you to define a "typed", enumerated property on `target`.
+   * @function module:fjlMutable.defineEnumProp
+   * @param Type {TypeRef} - {String|Function}
+   * @param target {TargetDescriptorTuple} - Target or array of target and descriptor ([target, descriptor]).
+   * @param propName {String}
+   * @param [defaultValue=undefined] {*}
+   * @returns {TargetDescriptorTuple}
+   */
+  defineEnumProp = function defineEnumProp(Type, target, propName) {
     var defaultValue = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : undefined;
 
-    var _targetDescriptorTupl3 = _targetDescriptorTuple(target),
-        _targetDescriptorTupl4 = slicedToArray(_targetDescriptorTupl3, 2),
-        _target = _targetDescriptorTupl4[0],
-        _descriptor = _targetDescriptorTupl4[1],
-        descriptor = _descriptor || _descriptorForSettable(Type, _target, propName);
+    var _toTargetDescriptorTu3 = toTargetDescriptorTuple(target),
+        _toTargetDescriptorTu4 = _slicedToArray(_toTargetDescriptorTu3, 2),
+        _target = _toTargetDescriptorTu4[0],
+        _descriptor = _toTargetDescriptorTu4[1],
+        descriptor = _descriptor || createTypedDescriptor(Type, _target, propName);
 
-    return defineProp$(Type, _makeDescriptorEnumerable([_target, descriptor]), propName, defaultValue);
-};
-var defineEnumProps$ = _getDefineProps$(true);
-var defineProps$ = _getDefineProps$(false);
-var errorIfNotTypeOnTarget = fjl.curry(errorIfNotTypeOnTarget$);
-var defineProp = fjl.curry(defineProp$);
-var defineEnumProp = fjl.curry(defineEnumProp$);
-var defineProps = fjl.curry(defineProps$);
-var defineEnumProps = fjl.curry(defineEnumProps$);
+    return defineProp(Type, toEnumerableDescriptor([_target, descriptor]), propName, defaultValue);
+  },
 
-/** ============================================================= */
-/** Type definitions:                                             */
-/** ============================================================= */
-/**
- * @typedef {String|Function} TypeRef
- * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
- */
+  /**
+   * Allows you to define multiple enum props at once on target.
+   * @function module:fjlMutable.defineEnumProps
+   * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineEnumProp`.
+   * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+   * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineEnumProp`.
+   */
+  defineEnumProps = fjl.curry(createDefinePropsMethod({
+    enumerable: true
+  })),
 
-/**
- * @typedef {*} Target
- */
+  /**
+   * Allows you to define multiple props at once on target.
+   * @function module:fjlMutable.defineProps
+   * @param argsTuple {Array.<DefinePropArgsTuple>} - Array of argArrays for `defineProp`.
+   * @param [target = undefined] {Target} - Target to use in internal calls if one is not provided but encountered 'argArray'.
+   * @returns {Array.<TargetDescriptorTuple>} - Results of each call to `defineProp`.
+   * @curried
+   */
+  defineProps = fjl.curry(createDefinePropsMethod({
+    enumerable: false
+  }));
+  /** ============================================================= */
 
-/**
- * @typedef {Object} Descriptor
- */
+  /** Type definitions:                                             */
 
-/**
- * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
- */
+  /** ============================================================= */
 
-/**
- * @typedef {Array.<TypeRef, TargetDescriptorTuple, String, *>}  DefinePropArgsTuple
- * @description Arguments list for `defineProp` and/or `defineEnumProp` (note: some
- *  parts of array/tuple are options (namely the last two args));  E.g.,
- *  ```
- *  [String, [someTarget], 'somePropName', 'someDefaultValue] // ...
- *  ```
- */
+  /**
+   * @typedef {String|Function} TypeRef
+   * @description Type reference.  Either actual type or type's name;  E.g., `Type.name`
+   */
 
-/**
- * @typedef {Function} PropsDefinerCall
- * @description Same type as `defineProp` and `defineEnumProp`
- * @param argsTuple {DefinePropArgsTuple}
- * @param target {Target}
- * @returns {Array.<TargetDescriptorTuple>}
- */
+  /**
+   * @typedef {*} Target
+   */
 
-exports._descriptorForSettable = _descriptorForSettable;
-exports._makeDescriptorEnumerable = _makeDescriptorEnumerable;
-exports._targetDescriptorTuple = _targetDescriptorTuple;
-exports.errorIfNotTypeOnTarget$ = errorIfNotTypeOnTarget$;
-exports.defineProp$ = defineProp$;
-exports.defineEnumProp$ = defineEnumProp$;
-exports.defineEnumProps$ = defineEnumProps$;
-exports.defineProps$ = defineProps$;
-exports.errorIfNotTypeOnTarget = errorIfNotTypeOnTarget;
-exports.defineProp = defineProp;
-exports.defineEnumProp = defineEnumProp;
-exports.defineProps = defineProps;
-exports.defineEnumProps = defineEnumProps;
+  /**
+   * @typedef {Object} Descriptor
+   */
 
-return exports;
+  /**
+   * @typedef {Array<Target, Descriptor>} TargetDescriptorTuple
+   */
+
+  /**
+   * @typedef {Array.<TypeRef, TargetDescriptorTuple, String, *>}  DefinePropArgsTuple
+   * @description Arguments list for `defineProp` and/or `defineEnumProp` (note: some
+   *  parts of array/tuple are options (namely the last two args));  E.g.,
+   *  ```
+   *  [String, [someTarget], 'somePropName', 'someDefaultValue] // ...
+   *  ```
+   */
+
+  /**
+   * @typedef {Function} PropsDefinerCall
+   * @description Same type as `defineProp` and `defineEnumProp`
+   * @param argsTuple {DefinePropArgsTuple}
+   * @param target {Target}
+   * @returns {Array.<TargetDescriptorTuple>}
+   */
+
+  exports.createTypedDescriptor = createTypedDescriptor;
+  exports.toEnumerableDescriptor = toEnumerableDescriptor;
+  exports.toTargetDescriptorTuple = toTargetDescriptorTuple;
+  exports.defineProp = defineProp;
+  exports.defineEnumProp = defineEnumProp;
+  exports.defineEnumProps = defineEnumProps;
+  exports.defineProps = defineProps;
+
+  return exports;
 
 }({},fjl));
 //# sourceMappingURL=fjl-mutable.js.map
