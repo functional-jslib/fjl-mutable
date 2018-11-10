@@ -5,6 +5,9 @@
 # fjl-mutable
 Functional and "typed" `defineProp`, `defineEnumProp`, `defineProps`, `defineEnumProps` functionality.
 
+## Deprecated
+This library now lives on as part of the [fjl library](https://github.com/functional-jslib/fjl).
+
 ## Sections in Readme:
 - [Requirements](#requirements)
 - [Getting Started](#getting-started)

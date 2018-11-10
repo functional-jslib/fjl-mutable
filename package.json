@@ -1,6 +1,6 @@
 {
   "name": "fjl-mutable",
-  "version": "0.18.3",
+  "version": "0.18.4",
   "description": "Typed mutable properties made easy(ier).",
   "main": "dist/cjs/fjlMutable",
   "module": "dist/es6-module/fjl-mutable.mjs",

@@ -4,3 +4,6 @@
 [![Dependencies](https://david-dm.org/functional-jslib/fjl-mutable.png)](https://david-dm.org/functional-jslib/fjl-mutable)
 # fjl-mutable
 Functional and "typed" `defineProp`, `defineEnumProp`, `defineProps`, `defineEnumProps` functionality.
+
+## Deprecated
+This library now lives on as part of the [fjl library](https://github.com/functional-jslib/fjl).
